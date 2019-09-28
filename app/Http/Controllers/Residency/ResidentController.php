@@ -36,35 +36,35 @@ class ResidentController extends Controller
         $occupation = $request->pekerjaan ?? false;
         $education = $request->pendidikan ?? false;
 
-        $query = $query->when($age, function($q) use ($age) {
+        $query = $query->when($age, function ($q) use ($age) {
             $age = Carbon::today()->subYears(intval($age));
             return $q->where('birthday', '<=', $age);
         })
-        ->when($gender, function($q) use ($gender) {
-            $gender = $gender == 'pria' ? 'male' : 'female';
-            return $q->where('gender', $gender);
-        })
-        ->when($bloodType, function($q) use ($bloodType) {
-            return $q->where('blood_type', $bloodType);
-        })
-        ->when($nationality, function($q) use ($nationality) {
-            return $q->where('nationality', $nationality);
-        })
-        ->when($religion, function($q) use ($religion) {
-            return $q->where('religion', $religion);
-        })
-        ->when($marriageStatus, function($q) use ($marriageStatus) {
-            return $q->where('marriage_status', $marriageStatus);
-        })
-        ->when($residentStatus, function($q) use ($residentStatus) {
-            return $q->where('resident_status', $residentStatus);
-        })
-        ->when($education, function($q) use ($education) {
-            return $q->where('education_id', $education);
-        })
-        ->when($occupation, function($q) use ($occupation) {
-            return $q->where('occupation_id', $occupation);
-        });
+            ->when($gender, function ($q) use ($gender) {
+                $gender = $gender == 'pria' ? 'male' : 'female';
+                return $q->where('gender', $gender);
+            })
+            ->when($bloodType, function ($q) use ($bloodType) {
+                return $q->where('blood_type', $bloodType);
+            })
+            ->when($nationality, function ($q) use ($nationality) {
+                return $q->where('nationality', $nationality);
+            })
+            ->when($religion, function ($q) use ($religion) {
+                return $q->where('religion', $religion);
+            })
+            ->when($marriageStatus, function ($q) use ($marriageStatus) {
+                return $q->where('marriage_status', $marriageStatus);
+            })
+            ->when($residentStatus, function ($q) use ($residentStatus) {
+                return $q->where('resident_status', $residentStatus);
+            })
+            ->when($education, function ($q) use ($education) {
+                return $q->where('education_id', $education);
+            })
+            ->when($occupation, function ($q) use ($occupation) {
+                return $q->where('occupation_id', $occupation);
+            });
 
         return $query;
     }
@@ -72,13 +72,12 @@ class ResidentController extends Controller
     public function index(Request $request)
     {
         $residents = Resident::canBeDisplayed();
-        
+
         if ($request->has('q')) {
             $q = $request->input('q');
-            $residents = $residents->where('nik', 'LIKE', '%'.$q.'%')
-                ->orWhere('name', 'LIKE', '%'.$q.'%');
-        }
-        elseif ($request->has('detail')) {
+            $residents = $residents->where('nik', 'LIKE', '%' . $q . '%')
+                ->orWhere('name', 'LIKE', '%' . $q . '%');
+        } elseif ($request->has('detail')) {
             $request->validate([
                 'umur' => 'nullable|numeric',
                 'gender' => 'nullable|in:pria,wanita',
@@ -95,7 +94,7 @@ class ResidentController extends Controller
         }
         $educations = Education::all();
         $occupations = Occupation::all();
-        
+
         $residents = $residents->paginate(50);
 
         return view('kependudukan.penduduk.index', compact('residents', 'educations', 'occupations'));
@@ -117,13 +116,13 @@ class ResidentController extends Controller
 
         return view('kependudukan.penduduk.lihat', compact('resident', 'provinces', 'officials'));
     }
-    
+
     public function edit($nik)
     {
         $resident = Resident::where('nik', $nik)->firstOrFail();
         $educations = Education::all();
         $occupations = Occupation::oldest('name')->get();
-        
+
         return view('kependudukan.penduduk.ubah', compact('resident', 'educations', 'occupations'));
     }
 
@@ -147,7 +146,7 @@ class ResidentController extends Controller
         ]);
 
         $resident = Resident::where('nik', $nik)->firstOrFail();
-            
+
         DB::transaction(function () use ($request, $resident) {
             $resident->fill($request->except('photo', 'relation'));
 
@@ -174,11 +173,11 @@ class ResidentController extends Controller
 
         $relation = $resident->family_member->relation;
         $familyId = $resident->family_member->family_id;
-        
+
         $resident->family_member()->delete();
-        
+
         $resident->delete();
-        
+
         $resident->transfer()->delete();
         $resident->birth()->delete();
         $resident->death()->delete();
@@ -198,14 +197,13 @@ class ResidentController extends Controller
             if ($newHead) {
                 $newHead = $newHead->resident;
                 $newHead->family_member()->delete();
-                
+
                 $member = new FamilyMember;
                 $member->relation = 'kepala';
                 $member->family()->associate($family);
                 $member->resident()->associate($newHead);
                 $member->save();
-            }
-            else {
+            } else {
                 $family->delete();
             }
         }
@@ -215,20 +213,32 @@ class ResidentController extends Controller
 
     public function modulKependudukanDetail($nik)
     {
-        $linkRequest = "http://localhost/tes/request.php?nik=";
+        // $linkRequest = "http://localhost/tes/request.php?nik=";
+        $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
+        //3304061303090001
+
         $data = json_decode(file_get_contents($linkRequest . $nik));
         return view('kependudukan.penduduk.modul-kependudukan-lihat', compact('data'));
     }
 
     public function modulKependudukan(Request $request)
     {
-        $linkRequest = "http://localhost/tes/request.php?nik=";
-        if($request->has('nik')){
+        // $linkRequest = "http://localhost/tes/request.php?nik=";
+        $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
+        if ($request->has('nik')) {
             $nik = $request->input('nik');
             $data = json_decode(file_get_contents($linkRequest . $nik));
+
+            $bday = new \DateTime($data->content[0]->TGL_LHR); // Your date of birth
+            $today = new \Datetime(date('Y-m-d'));
+            $diff = $today->diff($bday);
+
+            $data->content[0]->AGE = $diff->y;
         } else {
-            $data = json_decode(file_get_contents($linkRequest));;
+            $data = json_decode(file_get_contents($linkRequest));
         }
+        $data->status = !isset($data->content->RESPON) ? 200 : 404;
+        // die(json_encode($data));
         return view('kependudukan.penduduk.modul-kependudukan', compact('data'));
     }
 
@@ -239,10 +249,10 @@ class ResidentController extends Controller
 
         if ($request->has('q')) {
             $q = $request->input('q');
-            $residents = $residents->where('nik', 'LIKE', '%'.$q.'%')
-                ->orWhere('name', 'LIKE', '%'.$q.'%');
+            $residents = $residents->where('nik', 'LIKE', '%' . $q . '%')
+                ->orWhere('name', 'LIKE', '%' . $q . '%');
         }
-        
+
         $residents = $residents
             ->canBeDisplayed()
             ->get();
@@ -262,14 +272,14 @@ class ResidentController extends Controller
 
     public function getResident(Request $request, $nik)
     {
-        $result = Resident::where('nik', 'LIKE', '%'.$nik.'%')->canBeDisplayed();
+        $result = Resident::where('nik', 'LIKE', '%' . $nik . '%')->canBeDisplayed();
         $no_kk = $request->query('no_kk', false);
         $notBeneficiary = $request->query('not_beneficiary', false);
         $male = $request->query('pria', false);
         $female = $request->query('wanita', false);
 
         if ($no_kk) {
-            $result = $result->whereHas('family_member', function($q) use ($no_kk) {
+            $result = $result->whereHas('family_member', function ($q) use ($no_kk) {
                 return $q->wherehas('family', function ($q) use ($no_kk) {
                     return $q->where('no_kk', $no_kk);
                 });
@@ -290,13 +300,13 @@ class ResidentController extends Controller
 
     public function getIbu(Request $request, $nik)
     {
-        $result = Resident::where('nik', 'LIKE', '%'.$nik.'%')->canBeDisplayed();
+        $result = Resident::where('nik', 'LIKE', '%' . $nik . '%')->canBeDisplayed();
 
         $no_kk = $request->query('no_kk', false);
         $notBeneficiary = $request->query('not_beneficiary', false);
 
         if ($no_kk) {
-            $result = $result->whereHas('family_member', function($q) use ($no_kk) {
+            $result = $result->whereHas('family_member', function ($q) use ($no_kk) {
                 return $q->wherehas('family', function ($q) use ($no_kk) {
                     return $q->where('no_kk', $no_kk);
                 });
@@ -319,11 +329,17 @@ class ResidentController extends Controller
         $genders = $this->getGenderStatistics();
 
         return view('kependudukan.penduduk.statistik', compact(
-            'educations', 'occupations', 'bloodTypes', 'marriages', 'religions', 'genders'
+            'educations',
+            'occupations',
+            'bloodTypes',
+            'marriages',
+            'religions',
+            'genders'
         ));
     }
 
-    public function getEducationStatistics() {
+    public function getEducationStatistics()
+    {
         $educations = [];
 
         $eds = Education::with('residents')->get();
@@ -334,12 +350,13 @@ class ResidentController extends Controller
                 'value' => $ed->residents->count() ?: 0,
             ];
         }
-        
+
 
         return $educations;
     }
 
-    public function getOccupationStatistics(){
+    public function getOccupationStatistics()
+    {
         $occupations = [];
 
         $occs = Occupation::with('residents')->get();
@@ -350,19 +367,20 @@ class ResidentController extends Controller
                 'value' => $o->residents->count() ?: 0,
             ];
         }
-        
+
 
         return collect($occupations);
     }
 
-    public function getBloodTypeStatistics(){
+    public function getBloodTypeStatistics()
+    {
         $bloodType = collect([
             'a', 'ab', 'b', 'o',
             'a+', 'b+', 'a-', 'b-',
             'o+', 'o-', 'ab+', 'ab-',
         ]);
 
-        return $bloodType->map(function($item) {
+        return $bloodType->map(function ($item) {
             $count = Resident::where('blood_type', $item)->count();
             return collect([
                 'label' => strtoupper($item),
@@ -371,12 +389,13 @@ class ResidentController extends Controller
         });
     }
 
-    public function getMarriageStatistics(){
+    public function getMarriageStatistics()
+    {
         $marriages = collect([
             'kawin', 'belum_kawin', 'cerai_hidup', 'cerai_mati',
         ]);
 
-        return $marriages->map(function($item) {
+        return $marriages->map(function ($item) {
             $count = Resident::where('marriage_status', $item)->count();
             $item = explode('_', $item);
             for ($i = 0; $i < count($item); $i++) {
@@ -390,12 +409,13 @@ class ResidentController extends Controller
         });
     }
 
-    public function getReligionStatistics(){
+    public function getReligionStatistics()
+    {
         $religions = collect([
             'islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu',
         ]);
 
-        return $religions->map(function($item) {
+        return $religions->map(function ($item) {
             $count = Resident::where('religion', $item)->count();
             return collect([
                 'label' => ucfirst($item),
@@ -404,12 +424,13 @@ class ResidentController extends Controller
         });
     }
 
-    public function getGenderStatistics(){
+    public function getGenderStatistics()
+    {
         $genders = collect([
             'male', 'female',
         ]);
 
-        return $genders->map(function($item) {
+        return $genders->map(function ($item) {
             $count = Resident::where('gender', $item)->count();
             return collect([
                 'label' => $item == 'male' ? 'Lelaki' : 'Perempuan',
@@ -429,7 +450,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printbiopddk(Request $request, $nik){
+    public function printbiopddk(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = new Resident;
         $resident = Resident::with(['family_member', 'family_member.family'])
@@ -437,7 +459,7 @@ class ResidentController extends Controller
         $family = Family::where('no_kk', $resident->family_member->family->no_kk)->firstOrFail();
         $head = $family->familyHead();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
-    
+
         $file = 'surat_bio_penduduk.rtf';
         $replace = [
             'kab_pemerintah' => option()->kabupaten->name,
@@ -470,7 +492,7 @@ class ResidentController extends Controller
             'almtsebelum' => $_GET['almtsebelum'],
             'end_paspor' => $request->filled('end_paspor') ? Carbon::createFromFormat('Y-m-d', $_GET['end_paspor'])->format('d M Y') : '-',
             'paspor' => $request->filled('no_paspor') ? $_GET['no_paspor'] : '-',
-            'no_akta_kel' => $_GET['no_akta_lahir'], 
+            'no_akta_kel' => $_GET['no_akta_lahir'],
             'no_akta_kawin' => $request->filled('no_akta_kawin') ? $_GET['no_akta_kawin'] : '-',
             'tgl_akta_kawin' => $request->filled('tgl_akta_kawin') ? Carbon::createFromFormat('Y-m-d', $_GET['tgl_akta_kawin'])->format('d M Y') : '-',
             'no_akta_cerai' => $request->filled('no_akta_cerai') ? $_GET['no_akta_cerai'] : '-',
@@ -480,20 +502,20 @@ class ResidentController extends Controller
             'n1k' => $_GET['n1k'],
             'b4pac' => $_GET['b4pac'],
             'n1c' => $_GET['n1c'],
-            'ib0' => $_GET['ib0'],           
+            'ib0' => $_GET['ib0'],
             'nip' => $pamong->nip,
             'pamong' => $pamong->name,
             'tglsurat' => date('d M Y'),
-            ];
+        ];
 
         $filename = 'surat_bio_penduduk.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
-
     }
 
     // done 2
-    public function printKetPngtr(Request $request, $nik){
+    public function printKetPngtr(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -535,14 +557,15 @@ class ResidentController extends Controller
             'pamong' => $pamong->name,
             'mulai_berlaku' => Carbon::createFromFormat('Y-m-d', $request->mulai_berlaku)->format('d M Y'),
             'tgl_akhir' => Carbon::createFromFormat('Y-m-d', $request->tgl_akhir)->format('d M Y'),
-            ];
+        ];
         $filename = 'surat_ket_pengantar.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
 
     // done 2
-    public function printKetDomisili(Request $request, $nik){
+    public function printKetDomisili(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -591,7 +614,8 @@ class ResidentController extends Controller
     }
 
     //done 2
-    public function printSKCK(Request $request, $nik){
+    public function printSKCK(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -605,9 +629,9 @@ class ResidentController extends Controller
             'des_pemerintah' => option()->desa->name,
             'prov_pemerintah' => option()->provinsi->name,
             'almtds' => option()->office_address,
-            'kab' => $family->kabupaten->name,  
+            'kab' => $family->kabupaten->name,
             'kec' => $family->kecamatan->name,
-            'des' => $family->desa->name,     
+            'des' => $family->desa->name,
             'prov' => $family->provinsi->name,
             'judul_surat' => 'Surat Keterangan Catatan Kepolisian',
             'tglsurat' => date('d M Y'),
@@ -636,7 +660,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printSKTM(Request $request, $nik){
+    public function printSKTM(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -650,7 +675,7 @@ class ResidentController extends Controller
             'des_pemerintah' => option()->desa->name,
             'prov_pemerintah' => option()->provinsi->name,
             'almtds' => option()->office_address,
-            'kab' => $family->kabupaten->name,  
+            'kab' => $family->kabupaten->name,
             'kec' => $family->kecamatan->name,
             'des' => $family->desa->name,
             'prov' => $family->provinsi->name,
@@ -680,7 +705,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printKehilangan(Request $request, $nik){
+    public function printKehilangan(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -723,7 +749,7 @@ class ResidentController extends Controller
             'des' => $resident->family->desa->name,
             'kec' => $resident->family->kecamatan->name,
             'kab' => $resident->family->kabupaten->name,
-            
+
         ];
         $filename = 'Surat Kehilangan.doc';
 
@@ -731,7 +757,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printKeramaian(Request $request, $nik){
+    public function printKeramaian(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -782,7 +809,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printUsaha(Request $request, $nik){
+    public function printUsaha(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -831,7 +859,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printketPddk(Request $request, $nik){
+    public function printketPddk(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -881,8 +910,9 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printKtpProses(Request $request, $nik){
-        $pamong = Official::find($request->pamong_id);  
+    public function printKtpProses(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
         $family = Family::where('no_kk', $resident->family_member->family->no_kk)->firstOrFail();
@@ -924,12 +954,13 @@ class ResidentController extends Controller
     }
 
     // done 
-    public function printSporadik(Request $request, $nik){
+    public function printSporadik(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
         $head = FamilyMember::with(['resident'])
-            ->where('relation','kepala')->firstOrFail();
+            ->where('relation', 'kepala')->firstOrFail();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         $file = 'surat_sporadik.rtf';
         $replace = [
@@ -937,8 +968,8 @@ class ResidentController extends Controller
             'atas_nama' => $pamong->name,
             'denganjalan' => $_GET['perolehjalan'],
             'perolehtahun' => $_GET['perolehtahun'],
-            'namasaksiii' => $_GET['namesaksi2'],//'coba tes saksi 2',
-            'namasaksii' => $_GET['namesaksi1'],//'coba tes saksi 1',
+            'namasaksiii' => $_GET['namesaksi2'], //'coba tes saksi 2',
+            'namasaksii' => $_GET['namesaksi1'], //'coba tes saksi 1',
             'kabb' => $family->kabupaten->name,
             'kec' => $family->kecamatan->name,
             'desalurah' => $family->desa->name,
@@ -956,22 +987,22 @@ class ResidentController extends Controller
             'tanggallahir_pemohon' => $resident->birthday->format('d M Y'),
             'sex' => $resident->jenkel,
             'pekerjaan_pemohon' => $resident->occupation->name,
-            'utara' => $_GET['utara'],//'ini utara',
-            'timur' => $_GET['timur'],//'ini timur',
-            'selatan' => $_GET['selatan'],//'ini selatan',
-            'barat' => $_GET['barat'],//'ini barat',
-            'namasaksiii' => $_GET['namesaksi2'],//'coba tes saksi 2',
-            'umursaksiii' => $_GET['umursaksi2'],//'coba umur saksi 2',
-            'pekerjaansaksiii' => $_GET['kerjaansaksi2'],//'coba pekerjaan saksi 2',
-            'alamatsaksiii' => $_GET['alamatsaksi2'],//'coba alamat saksi 2',
-            'umursaksii' => $_GET['umursaksi1'],//'coba umur saksi 1',
-            'pekerjaansaksii' => $_GET['kerjaansaksi1'],//'coba pekerjaan saksi 1',
-            'alamatsaksii' => $_GET['alamatsaksi1'],//'coba alamat saksi 1',
-            'nib' => $_GET['nib'],//'coba nib 1212',
-            'statustanah' => $_GET['statustanah'],//'status aman',
-            'tanahuntuk' => $_GET['dipergunakanuntuk'],//'tanah ini untuk ....',
+            'utara' => $_GET['utara'], //'ini utara',
+            'timur' => $_GET['timur'], //'ini timur',
+            'selatan' => $_GET['selatan'], //'ini selatan',
+            'barat' => $_GET['barat'], //'ini barat',
+            'namasaksiii' => $_GET['namesaksi2'], //'coba tes saksi 2',
+            'umursaksiii' => $_GET['umursaksi2'], //'coba umur saksi 2',
+            'pekerjaansaksiii' => $_GET['kerjaansaksi2'], //'coba pekerjaan saksi 2',
+            'alamatsaksiii' => $_GET['alamatsaksi2'], //'coba alamat saksi 2',
+            'umursaksii' => $_GET['umursaksi1'], //'coba umur saksi 1',
+            'pekerjaansaksii' => $_GET['kerjaansaksi1'], //'coba pekerjaan saksi 1',
+            'alamatsaksii' => $_GET['alamatsaksi1'], //'coba alamat saksi 1',
+            'nib' => $_GET['nib'], //'coba nib 1212',
+            'statustanah' => $_GET['statustanah'], //'status aman',
+            'tanahuntuk' => $_GET['dipergunakanuntuk'], //'tanah ini untuk ....',
             'peroleh_dari' => $_GET['perolehdari'],
-            'luashak' => $_GET['luas'],//'luashak',
+            'luashak' => $_GET['luas'], //'luashak',
             'umur_pemohon' => $resident->birthday->age,
             'tgl_surat' => date('d M Y'),
             'jabatan' => $pamong->jabatan,
@@ -984,12 +1015,13 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printPerdupNikah(Request $request, $nik){
+    public function printPerdupNikah(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
         $head = FamilyMember::with(['resident'])
-            ->where('relation','kepala')->firstOrFail();
+            ->where('relation', 'kepala')->firstOrFail();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         $file = 'surat_permohonan_duplikat_surat_nikah.rtf';
         $replace = [
@@ -997,7 +1029,7 @@ class ResidentController extends Controller
             'kec_pemerintah' => option()->kecamatan->name,
             'des_pemerintah' => option()->desa->name,
             'prov_pemerintah' => option()->provinsi->name,
-            'almtds' => option()->office_address,  
+            'almtds' => option()->office_address,
             'kab' => $family->kabupaten->name,
             'kec' => $family->kecamatan->name,
             'des' => $family->desa->name,
@@ -1031,12 +1063,13 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printPerKK(Request $request, $nik){
+    public function printPerKK(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
         $head = FamilyMember::with(['resident'])
-            ->where('relation','kepala')->firstOrFail();
+            ->where('relation', 'kepala')->firstOrFail();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         $file = 'surat_permohonan_kartu_keluarga.rtf';
         $replace = [
@@ -1044,8 +1077,8 @@ class ResidentController extends Controller
             'kec_pemerintah' => option()->kecamatan->name,
             'des_pemerintah' => option()->desa->name,
             'prov_pemerintah' => option()->provinsi->name,
-            'almtds' => option()->office_address,   
-            'kab' => $family->kabupaten->name,  
+            'almtds' => option()->office_address,
+            'kab' => $family->kabupaten->name,
             'Sebutan_kabupaten' => '',
             'usia' => $resident->birthday->age,
             'kec' => $family->kecamatan->name,
@@ -1078,23 +1111,24 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printPerPKK(Request $request, $nik){
+    public function printPerPKK(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
         $head = FamilyMember::with(['resident'])
-            ->where('relation','kepala')->firstOrFail();
+            ->where('relation', 'kepala')->firstOrFail();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         $file = 'surat_permohonan_perubahan_kartu_keluarga.rtf';
         $replace = [
             'Sebutan_kabupaten' => '',
             'Sebutan_desa' => '',
             'sebutan_' => '',
-            'nama_kab' => option()->kabupaten->name,  
+            'nama_kab' => option()->kabupaten->name,
             'nama_kec' => option()->kecamatan->name,
             'nama_des' => option()->desa->name,
             'nama_provinsi' => option()->provinsi->name,
-            'kab' => $family->kabupaten->name,  
+            'kab' => $family->kabupaten->name,
             'usia' => $resident->birthday->age,
             'kec' => $family->kecamatan->name,
             'des' => $family->desa->name,
@@ -1128,7 +1162,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printAkta(Request $request, $nik){
+    public function printAkta(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -1136,13 +1171,13 @@ class ResidentController extends Controller
         $head = $family->familyHead();
         $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         $file = 'surat_permohonan_akta.rtf';
-        $replace = [    
+        $replace = [
             'Sebutan_kabupaten' => '',
             'sebutan_desa' => 'DESA',
-            'kab_pemerintah' => option()->kabupaten->name,    
-            'prov_pemerintah' => option()->provinsi->name,    
-            'kec_pemerintah' => option()->kecamatan->name,    
-            'des_pemerintah' => option()->desa->name,    
+            'kab_pemerintah' => option()->kabupaten->name,
+            'prov_pemerintah' => option()->provinsi->name,
+            'kec_pemerintah' => option()->kecamatan->name,
+            'des_pemerintah' => option()->desa->name,
             'almtds' => option()->office_address,
             'nama_kab' => $family->kabupaten->name,
             'nama_kec' => $family->kecamatan->name,
@@ -1179,7 +1214,8 @@ class ResidentController extends Controller
     }
 
     // done 2
-    public function printCerai(Request $request, $nik){
+    public function printCerai(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::with(['family_member', 'family_member.family'])
             ->where('nik', $nik)->firstOrFail();
@@ -1189,10 +1225,10 @@ class ResidentController extends Controller
         $file = 'surat_permohonan_cerai.rtf';
         $wife = Resident::where('nik', $request->nik_istri)->firstOrFail();
         $replace = [
-            'kab_pemerintah' => option()->kabupaten->name,    
-            'prov_pemerintah' => option()->provinsi->name,    
-            'kec_pemerintah' => option()->kecamatan->name,    
-            'des_pemerintah' => option()->desa->name,    
+            'kab_pemerintah' => option()->kabupaten->name,
+            'prov_pemerintah' => option()->provinsi->name,
+            'kec_pemerintah' => option()->kecamatan->name,
+            'des_pemerintah' => option()->desa->name,
             'alamat_des' => option()->office_address,
             'sebutan_kabupaten' => '',
             'SEBUTAN_KABUPATEN' => '',
@@ -1224,16 +1260,17 @@ class ResidentController extends Controller
             'alamat' => $resident->family_member->family->alamat,
             'no_ktp' => $nik,
             'jabatan' => $pamong->jabatan,
-            'form_sebab' => $_GET['sebab'],            
+            'form_sebab' => $_GET['sebab'],
             'kepala_kk' => $head->name,
             'nama' => $resident->name,
-            ];
+        ];
         $filename = 'Surat Permohonan Cerai.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
 
-    public function printPerDupKelahiran(Request $request, $nik){
+    public function printPerDupKelahiran(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::where('nik', $nik)->firstOrFail();
         $father = Resident::where('nik', $request->nik_ayah)->firstOrFail();
@@ -1245,11 +1282,11 @@ class ResidentController extends Controller
         $file = 'surat_permohonan_duplikat_kelahiran.rtf';
         $replace = [
             'judul_surat' => 'Surat Permohonan Duplikat Kelahiran',
-            
-            'kab_pemerintah' => option()->kabupaten->name,    
-            'prov_pemerintah' => option()->provinsi->name,    
-            'kec_pemerintah' => option()->kecamatan->name,    
-            'des_pemerintah' => option()->desa->name,    
+
+            'kab_pemerintah' => option()->kabupaten->name,
+            'prov_pemerintah' => option()->provinsi->name,
+            'kec_pemerintah' => option()->kecamatan->name,
+            'des_pemerintah' => option()->desa->name,
             'alamat_des' => option()->office_address,
 
             'nama_kab' => $family->kabupaten->name,
@@ -1293,7 +1330,8 @@ class ResidentController extends Controller
         return TemplateReplacer::replace($file, $replace, $filename);
     }
 
-    public function printPerAkta(Request $request, $nik){
+    public function printPerAkta(Request $request, $nik)
+    {
         $pamong = Official::find($request->pamong_id);
         $resident = Resident::where('nik', $nik)->firstOrFail();
         $father = Resident::where('nik', $request->nik_ayah)->firstOrFail();

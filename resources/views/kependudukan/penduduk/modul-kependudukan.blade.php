@@ -24,8 +24,8 @@ coba cari <strong>3304061303090001</strong>
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
-                    <form method="POST" action="{{ url()->current() }}" class="form-horizontal">
-                    @csrf
+                    <form method="GET" action="{{ url()->current() }}" class="form-horizontal">
+                    <!-- @csrf -->
                         <div class="col-md-6" style="padding-left: 0;">
                             <div class="col-md-6">
                                 <div class="input-group">
@@ -63,8 +63,8 @@ coba cari <strong>3304061303090001</strong>
                             <td>{{ $data->content[0]->NIK }}</td>
                             <td>{{ $data->content[0]->NAMA_LGKP }}</td>
                             <td>{{ $data->content[0]->JENIS_KLMIN }}</td>
-                            <td>{{ $data->content[0]->TMPT_LHR }}, 00-00-0000</td>
-                            <td>Tidak Diketahui</td>
+                            <td>{{ $data->content[0]->TMPT_LHR }}, {{ $data->content[0]->TGL_LHR }}</td>
+                            <td>{{ $data->content[0]->AGE }} Tahun</td>
                             <td>{{ $data->content[0]->PDDK_AKH }}</td>
                             <td>{{ $data->content[0]->JENIS_PKRJN }}</td>
                             <td class="text-center">
@@ -74,7 +74,7 @@ coba cari <strong>3304061303090001</strong>
                     </tbody>
                 </table>
                 @else
-                {{ $data->message }}
+                {{ $data->content->RESPON }}
                 @endif
             </div>
         </div>

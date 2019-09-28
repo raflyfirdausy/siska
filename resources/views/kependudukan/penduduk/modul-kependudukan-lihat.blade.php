@@ -42,7 +42,7 @@
               <div class="form-group">
                 <label class="col-md-12 form-label">Hubungan Dengan Keluarga</label>
                 <div class="col-md-12">
-                  <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
+                  <input type="text" class="form-control" value="{{ $data->content[0]->STAT_HBKEL }}" disabled>
                 </div>
               </div>
               <div class="row">
@@ -57,7 +57,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="col-md-12 form-label">Tanggal Lahir</label>
-                    <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
+                    <input type="text" class="form-control" value="{{ $data->content[0]->TGL_LHR }}" disabled>
                   </div>
                 </div>
               </div>
@@ -74,7 +74,7 @@
                   <div class="form-group">
                     <label class="col-md-12 form-label">Golongan Darah</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
+                      <input type="text" class="form-control" value="{{ $data->content[0]->GOL_DARAH }}" disabled>
                     </div>
                   </div>
                 </div>
@@ -84,7 +84,7 @@
                   <div class="form-group">
                     <label class="col-md-12 form-label">Kewarganegaraan</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
+                      <input type="text" class="form-control" value="BELUM" disabled>
                     </div>
                   </div>
                 </div>
@@ -98,7 +98,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="form-group">
                     <label class="col-md-12 form-label">Status Perkawinan</label>
                     <div class="col-md-12">
@@ -107,12 +107,12 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <label class="col-md-12 form-label">Status Kependudukan</label>
                     <div class="col-md-12">
                       <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="row">

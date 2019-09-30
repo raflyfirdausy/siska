@@ -53,6 +53,8 @@ Route::middleware(['auth', 'access:pengguna'])->group(function () {
 });
 
 Route::middleware(['auth', 'access:kependudukan'])->group(function () {
+
+    //START =================================================================================
     
     Route::get('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
     Route::post('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
@@ -60,6 +62,16 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::get('/modul-kependudukan/detail', function () {
         return redirect('/modul-kependudukan');
     });
+
+    Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'Residency\ResidentController@print_keterangan_pengantar');
+    // Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', function(){
+    //     die("aw");
+    // });
+
+    //END=================================================================
+
+
+
 
     Route::get('/keluarga', 'Residency\FamilyController@index');
     Route::get('/keluarga/tambah', 'Residency\FamilyController@create');

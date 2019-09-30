@@ -307,7 +307,7 @@
 <!--Modal Ket Pengantar -->
 <div class="modal fade" id="modalketpengantar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form method="GET" action="#">
+    <form method="GET" action="/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -316,7 +316,7 @@
         <div class="modal-body">
             <div class="form-group">
               <label class="form-label">Nomor Surat </label>
-              <input type="number" name="no_surat" class="form-control">
+              <input type="text" name="no_surat" class="form-control">
             </div>
             <div class="form-group">
               <label class="form-label">Keperluan </label>
@@ -340,7 +340,9 @@
               <label class="form-label">Pamong </label>
               <select name="pamong_id" required class="form-control" title="Pilih salah satu">
                 <option></option>
-               
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
               </select>
             </div>
         </div>

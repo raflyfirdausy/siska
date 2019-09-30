@@ -14,7 +14,7 @@ Daftar Pemilih Tetap |
 {{-- Judul halaman --}}
 @section('page-title')
 <strong>Testing </strong> Modul Kependudukan<br>
-coba cari <strong>3304061303090001</strong>
+Nik Contoh : <strong>3304061303090001 / 3304062007780002 / 3304064308830001</strong>
 @endsection
 
 {{-- Isi dari halaman, konten utama dari suatu halaman --}}

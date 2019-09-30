@@ -303,6 +303,7 @@ class ResidentController extends Controller
 
     public function modulKependudukan(Request $request)
     {
+        // die(url('/'));
         // $linkRequest = "http://localhost/tes/request.php?nik=";
         // $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
         $linkRequest = public_path("json/tidak_ditemukan.json");

@@ -307,7 +307,7 @@
 <!--Modal Ket Pengantar -->
 <div class="modal fade" id="modalketpengantar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form method="GET" action="/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

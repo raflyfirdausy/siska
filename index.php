@@ -38,6 +38,10 @@ require __DIR__.'/laravel/vendor/autoload.php';
 
 // $app = require_once __DIR__.'/../bootstrap/app.php';
 $app = require_once __DIR__.'/laravel/bootstrap/app.php';
+$app->bind('path.public', function() {
+    return __DIR__ . "\public";
+});
+
 
 /*
 |--------------------------------------------------------------------------

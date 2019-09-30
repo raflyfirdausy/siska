@@ -244,7 +244,7 @@ class ResidentController extends Controller
         $data = json_decode(file_get_contents($linkRequest));
         $alamatDesaLengkap = option()->office_address . ", Desa " . option()->desa->name . " Telp " . option()->phone . " Kode Pos " . option()->postal_code;
         $desa = option()->desa->name;
-        $file = 'a_surat_pengantar.rtf';
+        
         $replace = [
             'judul_kabupaten' => substr(option()->kabupaten->name, 5),
             'judul_kecamatan' => strtoupper(option()->kecamatan->name),
@@ -274,7 +274,10 @@ class ResidentController extends Controller
             'pamong' => $pamong->name,
             'nip' => $pamong->nip,
         ];
-        $filename = 'a_surat_pengantar.doc';
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'a_surat_pengantar.rtf';
+        $filename = 'SURAT_PENGANTAR_'.$data->content[0]->NAMA_LGKP.'_'.$date.'.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }

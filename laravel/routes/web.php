@@ -64,9 +64,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     });
 
     Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'Residency\ResidentController@print_keterangan_pengantar');
-    // Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', function(){
-    //     die("aw");
-    // });
+    Route::get('/modul-kependudukan/cetak-keterangan-data-hilang', 'Residency\ResidentController@print_keterangan_data_hilang');
 
     //END=================================================================
 

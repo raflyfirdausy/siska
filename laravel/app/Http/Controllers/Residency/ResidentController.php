@@ -219,11 +219,52 @@ class ResidentController extends Controller
 
     //START ================================================================================================
 
+    public function print_keterangan_data_hilang(Request $request)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $alamatDesaLengkap = option()->office_address . ", Desa " . option()->desa->name . " Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+
+        $replace = [
+            'judul_kabupaten' => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan' => strtoupper(option()->kecamatan->name),
+            'judul_desa' => strtoupper(option()->desa->name),
+            'alamatdesa' => $alamatDesaLengkap,
+            'nomor_surat' => $request->nomor_surat,
+            'jabatan' => $pamong->jabatan,
+            'desa' => option()->desa->name,
+            'kecamatan' => option()->kecamatan->name,
+            'kabupaten' => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi' => ucwords(strtolower(option()->provinsi->name)),
+            'Nik' => $request->nik,
+            'nama' => strtoupper($request->nama_lengkap),
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => Carbon::createFromFormat('Y-m-d', $request->tanggal_lahir)->format('d M Y'),
+            'warga_negara' => $request->kewarganegaraan,
+            'agama' => $request->agama,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'pekerjaan' => strtoupper($request->pekerjaan),
+            'alamat_tinggal' => ucwords(strtolower($request->alamat)),
+            'alamat_desa_tinggal' => option()->desa->name,
+            'golongan_darah' => $request->golongan_darah == "TIDAK TAHU" ? "-" : $request->golongan_darah,
+            'status_perkawinan' => $request->status_perkawinan,
+            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            'tanggal_indo' => Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->format('d M Y'),
+            'pamong' => $pamong->name,
+            'nip' => $pamong->nip,
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'a_surat_permohonan_pendataan_ulang.rtf';
+        $filename = 'SURAT_PERMOHONAN_PENDATAAN_ULANG_' . strtoupper($request->nama_lengkap) . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
     public function print_keterangan_pengantar(Request $request, $nik)
     {
         // die("haha");
         $pamong = Official::find($request->pamong_id);
-        
+
 
         if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
             $linkRequest = public_path("json/$nik.json");
@@ -232,7 +273,7 @@ class ResidentController extends Controller
             return redirect('/modul-kependudukan');
         }
         // $data = json_decode(file_get_contents($linkRequest . $nik));
-        
+
         // die(json_encode($alamatDesaLengkap));
 
         // $resident = Resident::with(['family_member', 'family_member.family'])
@@ -243,8 +284,7 @@ class ResidentController extends Controller
         // $birthday = $resident->birthday;
         $data = json_decode(file_get_contents($linkRequest));
         $alamatDesaLengkap = option()->office_address . ", Desa " . option()->desa->name . " Telp " . option()->phone . " Kode Pos " . option()->postal_code;
-        $desa = option()->desa->name;
-        
+
         $replace = [
             'judul_kabupaten' => substr(option()->kabupaten->name, 5),
             'judul_kecamatan' => strtoupper(option()->kecamatan->name),
@@ -253,7 +293,7 @@ class ResidentController extends Controller
             'nomor_surat' => $request->no_surat,
             'jabatan' => $pamong->jabatan,
             'desa' => option()->desa->name,
-            'kecamatan' => option()->kecamatan->name, 
+            'kecamatan' => option()->kecamatan->name,
             'kabupaten' => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
             'provinsi' => ucwords(strtolower(option()->provinsi->name)),
             'nik' => $data->content[0]->NIK,
@@ -277,7 +317,7 @@ class ResidentController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'a_surat_pengantar.rtf';
-        $filename = 'SURAT_PENGANTAR_'.$data->content[0]->NAMA_LGKP.'_'.$date.'.doc';
+        $filename = 'SURAT_PENGANTAR_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -326,13 +366,16 @@ class ResidentController extends Controller
 
                 $data->content[0]->AGE = $diff->y;
             }
+            $data->status = !isset($data->content->RESPON) ? 200 : 404;
         } else {
             $data = json_decode(file_get_contents($linkRequest));
+            $data->status = 400;
         }
-        $data->status = !isset($data->content->RESPON) ? 200 : 404;
+
         //die(json_encode($data));
         // die(public_path());
-        return view('kependudukan.penduduk.modul-kependudukan', compact('data'));
+        $officials = Official::all();
+        return view('kependudukan.penduduk.modul-kependudukan', compact('data', 'officials'));
     }
 
     //END ================================================================================================

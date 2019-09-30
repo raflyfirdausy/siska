@@ -1,1 +1,29 @@
-{"content":[{"NIK":"3304064308830001","NO_KK":"3304063112110001","NAMA_LGKP":"TINEM","JENIS_KLMIN":"PEREMPUAN","TMPT_LHR":"BANJARNEGARA","TGL_LHR":"1983-08-03","GOL_DARAH":"TIDAK TAHU","AGAMA":"ISLAM","STATUS_KAWIN":"KAWIN","STAT_HBKEL":"ISTRI","PDDK_AKH":"TAMAT SD\/SEDERAJAT","JENIS_PKRJN":"MENGURUS RUMAH TANGGA","ALAMAT":"TLAGAWERA","NO_RT":"3","NO_RW":"5","TGL_KWN":null}],"lastPage":true,"numberOfElements":1,"sort":null,"totalElements":1,"firstPage":true,"number":0,"size":10}
+{
+    "content": [
+        {
+            "NIK": "3304064308830001",
+            "NO_KK": "3304063112110001",
+            "NAMA_LGKP": "TINEM",
+            "JENIS_KLMIN": "PEREMPUAN",
+            "TMPT_LHR": "BANJARNEGARA",
+            "TGL_LHR": "1983-08-03",
+            "GOL_DARAH": "TIDAK TAHU",
+            "AGAMA": "ISLAM",
+            "STATUS_KAWIN": "KAWIN",
+            "STAT_HBKEL": "ISTRI",
+            "PDDK_AKH": "TAMAT SD\/SEDERAJAT",
+            "JENIS_PKRJN": "MENGURUS RUMAH TANGGA",
+            "ALAMAT": "TLAGAWERA",
+            "NO_RT": "3",
+            "NO_RW": "5",
+            "TGL_KWN": null
+        }
+    ],
+    "lastPage": true,
+    "numberOfElements": 1,
+    "sort": null,
+    "totalElements": 1,
+    "firstPage": true,
+    "number": 0,
+    "size": 10
+}

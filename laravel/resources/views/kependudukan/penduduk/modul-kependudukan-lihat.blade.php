@@ -151,13 +151,14 @@
           <div class="container">
             <h3>Cetak Surat</h3>
             <p>Silahkan pilih surat yang akan dicetak</p>                                         
+            <p>(untuk sementara hanya surat pengantar yang bisa digunakan)</p>   
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Pengaturan Penduduk
                 <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalBiodata" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Cetak Biodata</a></li>
                   <li role="presentation" class="divider"></li>
-                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketpengantar" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Pengantar</a></li>
+                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketpengantar" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b> Surat Keterangan Pengantar (sudah bisa digunakan)</b></a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketdomisili" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Domisili</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalskck" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Catatan Kepolisian</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalsktm" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Tidak Mampu</a></li>

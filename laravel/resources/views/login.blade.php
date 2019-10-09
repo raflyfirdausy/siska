@@ -25,7 +25,7 @@
                     <p>Username atau Password Anda salah!</p>
                 </div>
                 @endif
-                <div class="login-box" style="margin-top: 0px;">
+                <div class="login-box" style="margin-top: 0px; background-color:rgb(255, 255, 255)">
                     <div class="login-logo">
                         <img src="{{ asset('img/account/login-logo.png') }}" alt="Company Logo">
                     </div>

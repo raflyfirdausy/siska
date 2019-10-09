@@ -106,8 +106,8 @@
             @endif
             @if (Auth::user()->canAccess('keuangan'))
             <li>
-                <a href="#"><i class="fa fa-money"></i><span class="sidebar-text">Keuangan</span><span class="fa arrow"></span></a>
-                <ul class="submenu collapse">
+                <a href="https://siskeudes-banjarnegarakab.simdacloud.id/" target="_blank"><i class="fa fa-money"></i><span class="sidebar-text">Siskeudes</span></a>
+                <!-- <ul class="submenu collapse">
                     <li>
                         <a href="{{ url("rpjm") }}"><span class="sidebar-text">RPJM</span></a>
                     </li>
@@ -131,7 +131,7 @@
                             </li>
                         </ul>
                     </li>
-                </ul>
+                </ul> -->
             </li>
             @endif
             @if (Auth::user()->canAccess('pengguna'))

@@ -55,16 +55,19 @@ Route::middleware(['auth', 'access:pengguna'])->group(function () {
 Route::middleware(['auth', 'access:kependudukan'])->group(function () {
 
     //START =================================================================================
-    
-    Route::get('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
-    Route::post('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
-    Route::get('/modul-kependudukan/detail/{nik}', 'Residency\ResidentController@modulKependudukanDetail');
+
+    Route::get('/modul-kependudukan', 'ModulKependudukanController@modulKependudukan');
+    Route::post('/modul-kependudukan', 'ModulKependudukanController@modulKependudukan');
+    Route::get('/modul-kependudukan/detail/{nik}', 'ModulKependudukanController@modulKependudukanDetail');
     Route::get('/modul-kependudukan/detail', function () {
         return redirect('/modul-kependudukan');
     });
 
-    Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'Residency\ResidentController@print_keterangan_pengantar');
-    Route::get('/modul-kependudukan/cetak-keterangan-data-hilang', 'Residency\ResidentController@print_keterangan_data_hilang');
+    Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'ModulKependudukanController@print_keterangan_pengantar');
+    Route::get('/modul-kependudukan/cetak-keterangan-data-hilang', 'ModulKependudukanController@print_keterangan_data_hilang');
+
+    Route::get('/penduduk/statistik', 'ModulKependudukanController@statistikKependudukan');
+    Route::get('/penduduk/statistik/export', 'ModulKependudukanController@exportStatistikKependudukan');
 
     //END=================================================================
 
@@ -87,7 +90,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     
     Route::get('/penduduk', 'Residency\ResidentController@index');
     Route::get('/penduduk/cetak', 'Residency\ResidentController@print');
-    Route::get('/penduduk/statistik', 'Residency\ResidentController@statistics');
+    // Route::get('/penduduk/statistik', 'Residency\ResidentController@statistics');
     Route::get('/penduduk/daftar-pemilih-tetap', 'Residency\ResidentController@dpt');
     Route::get('/penduduk/daftar-pemilih-tetap/cetak', 'Residency\ResidentController@printDpt');
     Route::get('/penduduk/daftar-pemilih-tetap/export', 'Residency\ResidentController@exportDpt');
@@ -316,3 +319,15 @@ Route::get('/format-import/blok-tanah', 'General\ImportFormatController@landBloc
 Route::get('/format-import/kelas-tanah', 'General\ImportFormatController@landClassesFormat');
 Route::get('/format-import/sertifikat-tanah', 'General\ImportFormatController@landCertificatesFormat');
 
+// Route::get('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
+    // Route::post('/modul-kependudukan', 'Residency\ResidentController@modulKependudukan');
+    // Route::get('/modul-kependudukan/detail/{nik}', 'Residency\ResidentController@modulKependudukanDetail');
+    // Route::get('/modul-kependudukan/detail', function () {
+    //     return redirect('/modul-kependudukan');
+    // });
+
+    // Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'Residency\ResidentController@print_keterangan_pengantar');
+    // Route::get('/modul-kependudukan/cetak-keterangan-data-hilang', 'Residency\ResidentController@print_keterangan_data_hilang');
+
+    // Route::get('/penduduk/statistik', 'Residency\ResidentController@statistikKependudukan');
+    // Route::get('/penduduk/statistik/export', 'Residency\ResidentController@exportStatistikKependudukan');

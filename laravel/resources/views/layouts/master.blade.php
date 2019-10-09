@@ -6,7 +6,7 @@
 <head>
     <!-- BEGIN META SECTION -->
     <meta charset="utf-8">
-    <title>@yield('tab-title') SISKA - Sistem Informasi Desa dan Pembangunan Kawasan Perdesaan</title>
+    <title>@yield('tab-title') Sisdes - Sistem Informasi Desa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta content="" name="description" />
     <meta content="themes-lab" name="author" />

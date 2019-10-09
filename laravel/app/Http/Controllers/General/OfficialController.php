@@ -18,6 +18,7 @@ class OfficialController extends Controller
 
     public function store(Request $request)
     {
+        die($request->photo->hashName());
         $request->validate([
             'nip' => 'required',
             'name' => 'required',
@@ -26,6 +27,7 @@ class OfficialController extends Controller
         ]);
 
         $photoName = $request->photo->hashName();
+        
         $url = $request->photo->storeAs('uploaded/images', $photoName, 'public');
         $official = new Official($request->except('photo'));
         $official->photo = $url;

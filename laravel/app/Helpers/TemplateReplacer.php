@@ -6,7 +6,7 @@ use Novay\WordTemplate\Facade as WordTemplate;
 
 class TemplateReplacer {
     public static function replace($file, $replaceArray, $filename) {
-        $file = public_path("template/$file");
+        $file = asset("format_surat/$file");
         $replace = [
             '[' => '',
             ']' => '',

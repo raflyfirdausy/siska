@@ -18,6 +18,8 @@ use App\Exports\ResidentsExport;
 use App\Exports\DPTExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+use function GuzzleHttp\json_encode;
+
 class ResidentController extends Controller
 {
     private $bloodTypeRule = 'nullable|in:a,ab,b,o,a+,b+,a-,b-,o+,o-,ab+,ab-';
@@ -267,11 +269,12 @@ class ResidentController extends Controller
 
 
         if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-            $linkRequest = public_path("json/$nik.json");
+            $linkRequest = asset("json/$nik.json");
         } else {
-            // $linkRequest = public_path("json/tidak_ditemukan.json");
+            // $linkRequest = asset("json/tidak_ditemukan.json");
             return redirect('/modul-kependudukan');
         }
+
         // $data = json_decode(file_get_contents($linkRequest . $nik));
 
         // die(json_encode($alamatDesaLengkap));
@@ -282,8 +285,10 @@ class ResidentController extends Controller
         // $head = $family->familyHead();
         // $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
         // $birthday = $resident->birthday;
+
         $data = json_decode(file_get_contents($linkRequest));
         $alamatDesaLengkap = option()->office_address . ", Desa " . option()->desa->name . " Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+
 
         $replace = [
             'judul_kabupaten' => substr(option()->kabupaten->name, 5),
@@ -328,9 +333,9 @@ class ResidentController extends Controller
         // $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
         //3304061303090001
         if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-            $linkRequest = public_path("json/$nik.json");
+            $linkRequest = asset("json/$nik.json");
         } else {
-            // $linkRequest = public_path("json/tidak_ditemukan.json");
+            // $linkRequest = asset("json/tidak_ditemukan.json");
             return redirect('/modul-kependudukan');
         }
 
@@ -349,16 +354,18 @@ class ResidentController extends Controller
         // die(url('/'));
         // $linkRequest = "http://localhost/tes/request.php?nik=";
         // $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
-        $linkRequest = public_path("json/tidak_ditemukan.json");
+        $linkRequest = asset("json/tidak_ditemukan.json");
+
         if ($request->has('nik')) {
             $nik = $request->input('nik');
             if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-                $linkRequest = public_path("json/$nik.json");
+                $linkRequest = asset("json/$nik.json");
             } else {
-                $linkRequest = public_path("json/tidak_ditemukan.json");
+                $linkRequest = asset("json/tidak_ditemukan.json");
             }
             // $data = json_decode(file_get_contents($linkRequest . $nik));
             $data = json_decode(file_get_contents($linkRequest));
+
             if (!isset($data->content->RESPON)) {
                 $bday = new \DateTime($data->content[0]->TGL_LHR); // Your date of birth
                 $today = new \Datetime(date('Y-m-d'));
@@ -373,7 +380,7 @@ class ResidentController extends Controller
         }
 
         //die(json_encode($data));
-        // die(public_path());
+        // die(asset());
         $officials = Official::all();
         return view('kependudukan.penduduk.modul-kependudukan', compact('data', 'officials'));
     }
@@ -466,6 +473,62 @@ class ResidentController extends Controller
         return $result->get();
     }
 
+    public function statistikKependudukan()
+    {
+
+        // die(json_encode($occupations));
+
+        $jumlahJiwa = array(
+            array(
+                "label" => "Pria",
+                "value" => 1604
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 1481
+            )
+        );
+
+        $jumlahKepalaKeluarga = array(
+            array(
+                "label" => "Pria",
+                "value" => 892
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 122
+            )
+        );
+
+        $jumlahKepemilikanKartuKeluarga = array(
+            array(
+                "label" => "Pria",
+                "value" => 872
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 92
+            )
+        );
+
+
+        return view('kependudukan.penduduk.statistik-kependudukan', compact(
+            'jumlahJiwa',
+            'jumlahKepalaKeluarga',
+            'jumlahKepemilikanKartuKeluarga'
+        ));
+    }
+
+    public function exportStatistikKependudukan()
+    {
+        $file = public_path() . "/laporan_statistik/laporan-statistik-kependudukan-desa-tlagawera-banjarnegara-banjarnegara-2019-1.xls";
+
+        $headers = array(
+            'Content-Type: application/vnd.ms-excel',
+        );
+        return response()->download($file, 'laporan-statistik-kependudukan-desa-tlagawera-banjarnegara-banjarnegara-2019-1.xls', $headers);
+    }
+
     public function statistics()
     {
         $educations = $this->getEducationStatistics();
@@ -474,6 +537,8 @@ class ResidentController extends Controller
         $marriages = $this->getMarriageStatistics();
         $religions = $this->getReligionStatistics();
         $genders = $this->getGenderStatistics();
+
+        // die(json_encode($occupations));
 
         return view('kependudukan.penduduk.statistik', compact(
             'educations',

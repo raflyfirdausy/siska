@@ -8,9 +8,106 @@ use App\Http\Controllers\Controller;
 use App\Helpers\TemplateReplacer;
 use App\Models\General\Official;
 
+use function GuzzleHttp\json_encode;
+
 class ModulKependudukanController extends Controller
 {
-    //
+
+    public function getTanggalIndo($tanggal, $cetak_hari = false)
+    {
+        $hari = array(
+            1 =>    'Senin',
+            'Selasa',
+            'Rabu',
+            'Kamis',
+            'Jumat',
+            'Sabtu',
+            'Minggu'
+        );
+
+        $bulan = array(
+            1 =>   'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        );
+        $split       = explode('-', $tanggal);
+        $tgl_indo = $split[2] . ' ' . $bulan[(int) $split[1]] . ' ' . $split[0];
+
+        if ($cetak_hari) {
+            $num = date('N', strtotime($tanggal));
+            return $hari[$num] . ', ' . $tgl_indo;
+        }
+        return $tgl_indo;
+    }
+
+    public function getLink($nik)
+    {
+        if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
+            $linkRequest = asset("json/$nik.json");
+            return $linkRequest;
+        } else {
+            // $linkRequest = asset("json/tidak_ditemukan.json");
+            return redirect('/modul-kependudukan');
+        }
+    }
+
+    public function print_keterangan_tidak_mampu(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+        $defaultKeterangan = "Bahwa orang tersebut diatas benar - benar berasal dari keluarga tidak mampu ";
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'SKTM_KETERANGAN'   => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
+
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_tidak_mampu.rtf';
+        $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
     public function modulKependudukanDetail($nik)
     {
         // $linkRequest = "http://localhost/tes/request.php?nik=";
@@ -69,40 +166,270 @@ class ModulKependudukanController extends Controller
         return view('kependudukan.penduduk.modul-kependudukan', compact('data', 'officials'));
     }
 
-    public function print_keterangan_pengantar(Request $request, $nik)
+    public function print_keterangan_beda_nama_identitas(Request $request, $nik)
     {
-        // die("haha");
         $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');        
 
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
 
-        if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-            $linkRequest = asset("json/$nik.json");
-        } else {
-            // $linkRequest = asset("json/tidak_ditemukan.json");
-            return redirect('/modul-kependudukan');
-        }
+            'nik'               => $data->content[0]->NIK,
+            'NAMA'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
 
-        // $data = json_decode(file_get_contents($linkRequest . $nik));
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
 
-        // die(json_encode($alamatDesaLengkap));
+            'BENAR_NIK'         => $request->benar_nik,
+            'BNR_NM'            => $request->benar_nama,
+            'BENAR_TEMPAT_LAHIR'=> $request->benar_tempat_lahir,
+            'BENAR_TGL_LAHIR'   => $this->getTanggalIndo($request->benar_tanggal_lahir),
+            'BENAR_JENIS_KELAMIN'=> $request->benar_jenis_kelamin,
+            'benar_stts_kwn'    => $request->benar_status_perkawinan,
+            'BENAR_WARGA_NEGARA'=> $request->benar_warga_negara,
+            'BENAR_AGAMA'       => $request->benar_agama,
+            'BENAR_PEKERJAAN'   => $request->benar_pekerjaan,
+            'BENAR_ALAMAT'      => $request->benar_alamat
 
-        // $resident = Resident::with(['family_member', 'family_member.family'])
-        //     ->where('nik', $nik)->firstOrFail();
-        // $family = Family::where('no_kk', $resident->family_member->family->no_kk)->firstOrFail();
-        // $head = $family->familyHead();
-        // $family = Family::with(['provinsi', 'kabupaten', 'kecamatan', 'desa'])->firstOrFail();
-        // $birthday = $resident->birthday;
+        ];
 
-        $data = json_decode(file_get_contents($linkRequest));
-        $alamatDesaLengkap = option()->office_address . ", Desa " . option()->desa->name . " Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_beda_nama_identitas.rtf';
+        $filename = 'SURAT_KETERANGAN_BEDA_NAMA_IDENTITAS_' . $request->benar_nama . '_' . $date . '.doc';
 
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_domisili_lembaga(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+        $defaultKeterangan  =   $request->nama_lembaga ." benar - benar berdomisili dan beroperasi di Desa " . $request->nama_desa .
+                                " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name . 
+                                ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'LEMBAGA_NAMA'      => $request->nama_lembaga,
+            'LEMBAGA_ALAMAT'    => "Desa " . $request->nama_desa .
+                                   " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name . 
+                                   ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'KET_LEMBAGA'       => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
+
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_domisili_lembaga.rtf';
+        $filename = 'SURAT_KETERANGAN_DOMISILI_LEMBAGA_' . $request->nama_lembaga . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_domisili(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+        $defaultKeterangan = "Orang tersebut benar - benar warga Desa " . 
+                                option()->desa->name . " yang berdomisili di " . 
+                                $data->content[0]->ALAMAT . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW .
+                                ", Kec. " . option()->kecamatan->name . ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'DOMISILI_KET'        => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
+
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_domisili.rtf';
+        $filename = 'SURAT_KETERANGAN_DOMISILI_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_kematian(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474.3 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'HARI_TANGGAL'      => $this->getTanggalIndo($request->tanggal_kematian, TRUE),
+            'PUKUL_KEMATIAN'    => $request->pukul_kematian,
+            'PENYEBAB_KEMATIAN' => $request->penyebab_kematian,
+            'TEMPAT_KEMATIAN'   => $request->tempat_kematian
+
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_kematian.rtf';
+        $filename = 'SURAT_KETERANGAN_KEMATIAN_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_tanah(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "580 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'BLOK'              => $request->tanah_blok,
+            'PERSIL'            => $request->tanah_persil,
+            'LUAS_TANAH'        => $request->tanah_luas,
+            'LUAS_BANGUNAN'     => $request->bangunan_luas,
+            'KET_TANAH'         => $request->tanah_keterangan
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_tanah.rtf';
+        $filename = 'SURAT_KETERANGAN_TANAH_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_usaha(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "500 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
 
         $replace = [
             'judul_kabupaten' => substr(option()->kabupaten->name, 5),
             'judul_kecamatan' => strtoupper(option()->kecamatan->name),
             'judul_desa' => strtoupper(option()->desa->name),
+            'kop_jenis' => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
             'alamatdesa' => $alamatDesaLengkap,
-            'nomor_surat' => $request->no_surat,
+            'nomor_surat' => $noSurat,
             'jabatan' => $pamong->jabatan,
             'desa' => option()->desa->name,
             'kecamatan' => option()->kecamatan->name,
@@ -111,25 +438,28 @@ class ModulKependudukanController extends Controller
             'nik' => $data->content[0]->NIK,
             'nama' => $data->content[0]->NAMA_LGKP,
             'tempat_lahir' => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir' => Carbon::createFromFormat('Y-m-d', $data->content[0]->TGL_LHR)->format('d M Y'),
+            'tanggal_lahir' => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'warga_negara' => "INDONESIA",
             'agama' => $data->content[0]->AGAMA,
             'jenis_kelamin' => $data->content[0]->JENIS_KLMIN,
-            'pekerjaan' => $data->content[0]->JENIS_PKRJN,
-            'alamat_tinggal' => ucwords(strtolower($data->content[0]->ALAMAT)),
+            'STATUS_KAWIN' => $data->content[0]->STATUS_KAWIN,
+            'PEKERJAAN' => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal' => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
             'alamat_desa_tinggal' => option()->desa->name,
             'golongan_darah' => $data->content[0]->GOL_DARAH == "TIDAK TAHU" ? "-" : $data->content[0]->GOL_DARAH,
             'keperluan' => $request->keperluan,
-            'mulai_berlaku' => Carbon::createFromFormat('Y-m-d', $request->mulai_berlaku)->format('d M Y'),
-            'tgl_akhir' => Carbon::createFromFormat('Y-m-d', $request->tgl_akhir)->format('d M Y'),
-            'tanggal_indo' => Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->format('d M Y'),
-            'pamong' => $pamong->name,
+            'tanggal_indo' => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong' => strtoupper($pamong->name),
             'nip' => $pamong->nip,
+            'pemegang' => $data->content[0]->NAMA_LGKP,
+            'USAHA_BIDANG' => $request->bidang_usaha,
+            'JENIS_USAHA' => $request->jenis_usaha,
+            'TAHUN_USAHA' => $request->tahun_usaha
         ];
 
         $date = date('d_M_Y_H_i_s', time());
-        $file = 'surat_pengantar.rtf';
-        $filename = 'SURAT_PENGANTAR_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        $file = 'surat_keterangan_usaha.rtf';
+        $filename = 'SURAT_KETERANGAN_USAHA_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -163,7 +493,7 @@ class ModulKependudukanController extends Controller
             'golongan_darah' => $request->golongan_darah == "TIDAK TAHU" ? "-" : $request->golongan_darah,
             'status_perkawinan' => $request->status_perkawinan,
             'pendidikan_terakhir' => $request->pendidikan_terakhir,
-            'tanggal_indo' => Carbon::createFromFormat('Y-m-d', date('Y-m-d'))->format('d M Y'),
+            'tanggal_indo' => $this->getTanggalIndo(date('Y-m-d')),
             'pamong' => $pamong->name,
             'nip' => $pamong->nip,
         ];
@@ -171,6 +501,53 @@ class ModulKependudukanController extends Controller
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_permohonan_pendataan_ulang.rtf';
         $filename = 'SURAT_PERMOHONAN_PENDATAAN_ULANG_' . strtoupper($request->nama_lengkap) . '_' . $date . '.doc';
+
+        return TemplateReplacer::replace($file, $replace, $filename);
+    }
+
+    public function print_keterangan_pengantar(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+
+        $replace = [
+            'judul_kabupaten' => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan' => strtoupper(option()->kecamatan->name),
+            'judul_desa' => strtoupper(option()->desa->name),
+            'kop_jenis' => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa' => $alamatDesaLengkap,
+            'nomor_surat' => $noSurat,
+            'jabatan' => $pamong->jabatan,
+            'desa' => option()->desa->name,
+            'kecamatan' => option()->kecamatan->name,
+            'kabupaten' => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi' => ucwords(strtolower(option()->provinsi->name)),
+            'nik' => $data->content[0]->NIK,
+            'nama' => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir' => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir' => $this->getTanggalIndo($data->content[0]->TGL_LHR),
+            'warga_negara' => "INDONESIA",
+            'agama' => $data->content[0]->AGAMA,
+            'jenis_kelamin' => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN' => $data->content[0]->STATUS_KAWIN,
+            'pekerjaan' => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal' => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+            'alamat_desa_tinggal' => option()->desa->name,
+            'golongan_darah' => $data->content[0]->GOL_DARAH == "TIDAK TAHU" ? "-" : $data->content[0]->GOL_DARAH,
+            'keperluan' => $request->keperluan,
+            // 'mulai_berlaku' => Carbon::createFromFormat('Y-m-d', $request->mulai_berlaku)->format('d M Y'),
+            // 'tgl_akhir' => Carbon::createFromFormat('Y-m-d', $request->tgl_akhir)->format('d M Y'),
+            'tanggal_indo' => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong' => strtoupper($pamong->name),
+            'nip' => $pamong->nip,
+            'pemegang' => $data->content[0]->NAMA_LGKP
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_pengantar.rtf';
+        $filename = 'SURAT_PENGANTAR_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -223,7 +600,7 @@ class ModulKependudukanController extends Controller
 
     public function exportStatistikKependudukan()
     {
-        $file = public_path() . "/laporan_statistik/laporan-statistik-kependudukan-desa-tlagawera-banjarnegara-banjarnegara-2019-1.xls";
+        $file = asset("/laporan_statistik/laporan-statistik-kependudukan-desa-tlagawera-banjarnegara-banjarnegara-2019-1.xls");
 
         $headers = array(
             'Content-Type: application/vnd.ms-excel',

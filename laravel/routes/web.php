@@ -65,6 +65,13 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
 
     Route::get('/modul-kependudukan/cetak-ket-pengantar/{nik}', 'ModulKependudukanController@print_keterangan_pengantar');
     Route::get('/modul-kependudukan/cetak-keterangan-data-hilang', 'ModulKependudukanController@print_keterangan_data_hilang');
+    Route::get('/modul-kependudukan/cetak-ket-usaha/{nik}', 'ModulKependudukanController@print_keterangan_usaha');
+    Route::get('/modul-kependudukan/cetak-ket-tanah/{nik}', 'ModulKependudukanController@print_keterangan_tanah');
+    Route::get('/modul-kependudukan/cetak-ket-kematian/{nik}', 'ModulKependudukanController@print_keterangan_kematian');
+    Route::get('/modul-kependudukan/cetak-ket-domisili/{nik}', 'ModulKependudukanController@print_keterangan_domisili');
+    Route::get('/modul-kependudukan/cetak-ket-domisili-lembaga/{nik}', 'ModulKependudukanController@print_keterangan_domisili_lembaga');
+    Route::get('/modul-kependudukan/cetak-ket-tidak-mampu/{nik}', 'ModulKependudukanController@print_keterangan_tidak_mampu');
+    Route::get('/modul-kependudukan/cetak-ket-beda-nama-identitas/{nik}', 'ModulKependudukanController@print_keterangan_beda_nama_identitas');
 
     Route::get('/penduduk/statistik', 'ModulKependudukanController@statistikKependudukan');
     Route::get('/penduduk/statistik/export', 'ModulKependudukanController@exportStatistikKependudukan');

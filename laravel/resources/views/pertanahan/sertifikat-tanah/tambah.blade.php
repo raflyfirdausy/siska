@@ -3,17 +3,17 @@
 
 {{-- Judul di tab, selalu tambahin karakter | di akhir --}}
 @section('tab-title')
-  Tambah Sertifikat Tanah |
+Tambah Sertifikat Tanah |
 @endsection
 
 {{-- Untuk menambahkan custom css file atau meta baru di header --}}
 @section('page-headers')
-  
+
 @endsection
 
 {{-- Judul halaman --}}
 @section('page-title')
-  <strong>Tambah</strong> Sertifikat Tanah
+<strong>Tambah</strong> Sertifikat Tanah
 @endsection
 
 {{-- Isi dari halaman, konten utama dari suatu halaman --}}
@@ -42,10 +42,16 @@
                     <input type="text" class="form-control" name="number" required>
                   </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-md-12 form-label">Foto Sertifikat Tanah <span class="asterisk">*</span></label>
+                    <div class="col-md-12">
+                      <input type="file" class="form-control" name="photo">
+                    </div>
+                </div>
                 <div class="col-sm-9 col-sm-offset-3">
                   <div class="pull-right">
-                  <a href="{{ action("Estate\LandCertificateController@index") }}" class="btn btn-default">Kembali</a>
-                  <button type="submit" class="btn btn-success">Simpan</button>
+                    <a href="{{ action('Estate\LandCertificateController@index') }}" class="btn btn-default">Kembali</a>
+                    <button type="submit" class="btn btn-success">Simpan</button>
                   </div>
                 </div>
               </div>
@@ -79,45 +85,45 @@
 @endsection
 
 @section('page-footers')
-  <script>
-    var url = "{{ URL::to('/') }}";
-    var idCounter = 0;
+<script>
+  var url = "{{ URL::to('/') }}";
+  var idCounter = 0;
 
-    function getResident(input, nik, target, inputTarget) {
-      if (nik) {
-        $.getJSON(`${url}/penduduk/${nik}/info`, function(data) {
-          if (data.length > 0) {
-              $('#' + target).empty();
-              $('#' + target).fadeIn();
-              $('#' + target).append(`<ul id="result-${target}" class="dropdown-menu" style="display:block; position:relative">`);
-              $.each(data, function(key, value) {
-                $('#result-' + target).append(`<li 
+  function getResident(input, nik, target, inputTarget) {
+    if (nik) {
+      $.getJSON(`${url}/penduduk/${nik}/info`, function(data) {
+        if (data.length > 0) {
+          $('#' + target).empty();
+          $('#' + target).fadeIn();
+          $('#' + target).append(`<ul id="result-${target}" class="dropdown-menu" style="display:block; position:relative">`);
+          $.each(data, function(key, value) {
+            $('#result-' + target).append(`<li 
                   onclick="chooseResident('${input}', '${inputTarget}', '${value.nik}', '${value.name}', '${target}')">
                     NIK : ${value.nik} - Nama : ${value.name}
                   </li>`);
-              });
-          }
-        });
-      }
+          });
+        }
+      });
     }
+  }
 
-    function chooseResident(input, target, nik, name, resultWrapper) {
-      $(target).attr('value', nik);
-      $(input).attr('value', `${nik} - ${name}`);
-      $('#' + resultWrapper).fadeOut();
-    }
+  function chooseResident(input, target, nik, name, resultWrapper) {
+    $(target).attr('value', nik);
+    $(input).attr('value', `${nik} - ${name}`);
+    $('#' + resultWrapper).fadeOut();
+  }
 
-    $(document).ready(function() {
-      $('#current-owner-nik-input').on('keyup', function() {
-        var nik = $(this).val();
-        getResident('#current-owner-nik-input', nik, 'current-owner-nik-list', '#current_owner_nik');
-      })
+  $(document).ready(function() {
+    $('#current-owner-nik-input').on('keyup', function() {
+      var nik = $(this).val();
+      getResident('#current-owner-nik-input', nik, 'current-owner-nik-list', '#current_owner_nik');
+    })
 
-      $('#add-past-owner-button').on('click', function() {
-        (() => {
-          const currentId = idCounter;
-          const pastOwnersWrapper = $('#past-owners-wrapper');
-          pastOwnersWrapper.append(`
+    $('#add-past-owner-button').on('click', function() {
+      (() => {
+        const currentId = idCounter;
+        const pastOwnersWrapper = $('#past-owners-wrapper');
+        pastOwnersWrapper.append(`
             <div class="row" id="past-owner-input-${currentId}">
               <div class="col-md-7">
                 <div class="form-group">
@@ -145,17 +151,17 @@
               </div>
             </div>
           `);
-          $(`#past-owner-nik-input-${currentId}`).on('keyup', function() {
-            var nik = $(this).val();
-            getResident(`#past-owner-nik-input-${currentId}`, nik, `past-owner-nik-list-${currentId}`, `#past-owner-nik-${currentId}`);
-          });
+        $(`#past-owner-nik-input-${currentId}`).on('keyup', function() {
+          var nik = $(this).val();
+          getResident(`#past-owner-nik-input-${currentId}`, nik, `past-owner-nik-list-${currentId}`, `#past-owner-nik-${currentId}`);
+        });
 
-          $(`#delete-past-owner-button-${currentId}`).on('click', function() {
-            $(`#past-owner-input-${currentId}`).remove();
-          });
-        })();
-        idCounter++;
-      });
+        $(`#delete-past-owner-button-${currentId}`).on('click', function() {
+          $(`#past-owner-input-${currentId}`).remove();
+        });
+      })();
+      idCounter++;
     });
-  </script>
+  });
+</script>
 @endsection

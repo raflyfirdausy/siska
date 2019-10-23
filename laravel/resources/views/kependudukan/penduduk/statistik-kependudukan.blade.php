@@ -60,7 +60,7 @@ Statistik Penduduk |
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
-                    <h3 class="m-b-0 m-t-0"><strong>Jumlah </strong> Kepala Keluarga</h3>
+                    <h3 class="m-b-0 m-t-0"><strong>Jumlah </strong> Kepemilikan Kartu Keluarga</h3>
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-sm-6 col-sm-offset-3">

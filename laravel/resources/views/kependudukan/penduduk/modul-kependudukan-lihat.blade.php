@@ -150,16 +150,26 @@
         <div class="row">
           <div class="container">
             <h3>Cetak Surat</h3>
-            <p>Silahkan pilih surat yang akan dicetak</p>                                         
-            <p>(untuk sementara hanya surat pengantar yang bisa digunakan)</p>   
+            <p>Silahkan pilih surat yang akan dicetak</p>                           
             <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Pengaturan Penduduk
+              <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Pilih Jenis Surat
                 <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalBiodata" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Cetak Biodata</a></li>
-                  <li role="presentation" class="divider"></li>
-                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketpengantar" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b> Surat Keterangan Pengantar (sudah bisa digunakan)</b></a></li>
-                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketdomisili" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Domisili</a></li>
+                  {{-- <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalBiodata" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Cetak Biodata</a></li>
+                  <li role="presentation" class="divider"></li> --}}
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalkettidakmampu" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>400 | Surat Keterangan Tidak Mampu</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketpengantar" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474 | Surat Pengantar Umum</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketpengantarKtp" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474 | Surat Pengantar KTP</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketpengantarSKCK" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474 | Surat Pengantar SKCK</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketbedanamaidentitas" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474 | Surat Keterangan Beda Nama / Identitas</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketdomisili" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474.1 | Surat Keterangan Domisili</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketdomisililembaga" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474.1 | Surat Keterangan Domisili Lembaga</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketkematian" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>474.3 | Surat Keterangan Kematian</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalketusaha" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>500 | Surat Keterangan Usaha</b></a></li>
+                  <li role="presentation"><a role="menuitem" href="#" data-toggle="modal" data-target="#modalkettanah" tabindex="-1"><i class="fa fa-print">&nbsp;</i><b>580 | Surat Keterangan Tanah</b></a></li>
+                  
+
+                  {{-- <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalketdomisili" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Domisili</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalskck" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Catatan Kepolisian</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalsktm" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Tidak Mampu</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalkehilangan" tabindex="-1"><i class="fa fa-print">&nbsp;</i> Surat Keterangan Kehilangan</a></li>
@@ -174,7 +184,7 @@
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalpermohonankk" tabindex="-1"> <i class="fa fa-print">&nbsp;</i>Surat Permohonan Kartu Keluarga</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalpermohonanpkk" tabindex="-1"> <i class="fa fa-print">&nbsp;</i>Surat Permohonan Perubahan Kartu Keluarga</a></li>
                   <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalperakta" tabindex="-1"> <i class="fa fa-print">&nbsp;</i>Surat Pernyataan Akta</a></li>
-                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalsporadik" tabindex="-1"> <i class="fa fa-print">&nbsp;</i>Surat Pernyataan Penguasaan Fisik Bidang Tanah (SPORADIK)</a></li>
+                  <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#modalsporadik" tabindex="-1"> <i class="fa fa-print">&nbsp;</i>Surat Pernyataan Penguasaan Fisik Bidang Tanah (SPORADIK)</a></li> --}}
                 </ul>
               </div>
             </div>
@@ -208,8 +218,49 @@
     </div>
   </div>
 
+{{-- Modal Ket Pengantar Keterangan Tidak mampu --}}
+<div class="modal fade" id="modalkettidakmampu" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-tidak-mampu/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Tidak Mampu</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>400 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Keterangan (Opsional - boleh dikosongi)</label>
+                <textarea class="form-control" rows="2" name="keterangan" id="keterangan"></textarea>
+              </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>  
 
-  <!--Modal Biodata -->
+
+<!--Modal Biodata -->
 <div class="modal fade" id="modalBiodata" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -303,39 +354,102 @@
     </div>
   </div>
 </div>
-{{-- End Modal Biodata --}}
 
-<!--Modal Ket Pengantar -->
-<div class="modal fade" id="modalketpengantar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+{{-- Modal Surat Keterangan kematian --}}
+<div class="modal fade" id="modalketbedanamaidentitas" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-beda-nama-identitas/{{ $data->content[0]->NIK }}">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Pengantar</h4>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Beda Nama / Identitas</h4>
         </div>
         <div class="modal-body">
             <div class="form-group">
               <label class="form-label">Nomor Surat </label>
-              <input type="text" name="no_surat" class="form-control">
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474.3 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+              </div>
+            </div>
+            <label class="text-center"><b>Isi data di bawah ini dengan data yang benar</b></label>
+            <div class="form-group">
+                <label class="form-label">NIK</label>
+              <input required type="number" name="benar_nik" value="{{ $data->content[0]->NIK }}" class="form-control">  
             </div>
             <div class="form-group">
-              <label class="form-label">Keperluan </label>
-              <input type="text" name="keperluan" class="form-control">
+                <label class="form-label">Nama Lengkap</label>
+                <input required type="text" name="benar_nama" value="{{ $data->content[0]->NAMA_LGKP }}" class="form-control">  
             </div>
             <div class="row">
-              <div class="col-xs-6">
-                <div class="form-group">
-                  <label class="form-label">Mulai Berlaku</label>
-                  <input type="date" name="mulai_berlaku" class="form-control">
-                </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Tempat Lahir</label>
+                      <input required type="text" name="benar_tempat_lahir" value="{{ $data->content[0]->TMPT_LHR }}" class="form-control">  
+                  </div>
               </div>
-              <div class="col-xs-6">
-                <div class="form-group">
-                  <label class="form-label">Tanggal Akhir</label>
-                  <input type="date" name="tgl_akhir" class="form-control">
-                </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Tanggal Lahir</label>
+                      <input required type="date" name="benar_tanggal_lahir" value="{{ $data->content[0]->TGL_LHR }}" class="form-control">  
+                  </div>
               </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Jenis Kelamin</label>
+                      <select name="benar_jenis_kelamin" required class="form-control" title="Pilih salah satu">
+                        <option></option>
+                        <option value="LAKI-LAKI" {{ $data->content[0]->TGL_LHR != "PEREMPUAN" ? "selected" : "" }}>LAKI-LAKI</option>
+                        <option value="PEREMPUAN" {{ $data->content[0]->TGL_LHR == "PEREMPUAN" ? "selected" : "" }}>PEREMPUAN</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Status Perkawinan</label>
+                      <select name="benar_status_perkawinan" required class="form-control" title="Pilih salah satu">
+                        <option></option>
+                        <option value="BELUM KAWIN" {{ $data->content[0]->STATUS_KAWIN = "BELUM KAWIN" ? "selected" : "" }}>BELUM KAWIN</option>
+                        <option value="KAWIN" {{ $data->content[0]->STATUS_KAWIN == "KAWIN" ? "selected" : "" }}>KAWIN</option>
+                        <option value="CERAI HIDUP" {{ $data->content[0]->STATUS_KAWIN == "CERAI HIDUP" ? "selected" : "" }}>CERAI HIDUP</option>
+                        <option value="CERAI MATI" {{ $data->content[0]->STATUS_KAWIN == "CERAI MATI" ? "selected" : "" }}>CERAI MATI</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Warga Negara</label>
+                      <input required type="text" name="benar_warga_negara" value="INDONESIA" class="form-control">  
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Agama</label>
+                      <select name="benar_agama" required class="form-control" title="Pilih salah satu">
+                        <option></option>
+                        <option value="ISLAM" {{ $data->content[0]->STATUS_KAWIN = "ISLAM" ? "selected" : "" }}>ISLAM</option>
+                        <option value="KRISTEN" {{ $data->content[0]->STATUS_KAWIN == "KRISTEN" ? "selected" : "" }}>KRISTEN</option>
+                        <option value="KATOLIK" {{ $data->content[0]->STATUS_KAWIN == "KATOLIK" ? "selected" : "" }}>KATOLIK</option>
+                        <option value="HINDU" {{ $data->content[0]->STATUS_KAWIN == "HINDU" ? "selected" : "" }}>HINDU</option>
+                        <option value="BUDDHA" {{ $data->content[0]->STATUS_KAWIN == "BUDDHA" ? "selected" : "" }}>BUDDHA</option>
+                        <option value="KONGHUCU" {{ $data->content[0]->STATUS_KAWIN == "KONGHUCU" ? "selected" : "" }}>KONGHUCU</option>
+                        <option value="KEPERCAYAAN LAIN" {{ $data->content[0]->STATUS_KAWIN == "KEPERCAYAAN LAIN" ? "selected" : "" }}>KEPERCAYAAN LAIN</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Pekerjaan</label>
+                <input required type="text" name="benar_pekerjaan" value="{{ $data->content[0]->JENIS_PKRJN }}" class="form-control">  
+            </div>
+            <div class="form-group">
+                <label for="keterangan">Alamat</label>
+            <textarea class="form-control" rows="2" name="benar_alamat" id="keterangan">{{ ucfirst(strtolower($data->content[0]->ALAMAT)) }} RT {{ $data->content[0]->NO_RT }} RW {{ $data->content[0]->NO_RW }}, Kec. {{ option()->kecamatan->name }}, Kab. {{ ucfirst(strtolower(substr(option()->kabupaten->name, 5))) }}</textarea>
             </div>
             <div class="form-group">
               <label class="form-label">Pamong </label>
@@ -356,108 +470,438 @@
   </div>
 </div>
 
-{{-- Modal ket Domisili --}}
+<!--Modal Ket Pengantar UMUM -->
+<div class="modal fade" id="modalketpengantar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Pengantar Umum</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+
+            </div>
+            <div class="form-group">
+              <label class="form-label">Keperluan </label>
+              <input required type="text" name="keperluan" class="form-control">
+            </div>
+            {{-- <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="form-label">Mulai Berlaku</label>
+                  <input required type="date" name="mulai_berlaku" class="form-control">
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="form-label">Tanggal Akhir</label>
+                  <input required type="date" name="tgl_akhir" class="form-control">
+                </div>
+              </div>
+            </div> --}}
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Ket Pengantar KTP --}}
+<div class="modal fade" id="modalketpengantarKtp" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Pengantar KTP Elektronik</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+            </div>
+            <input required type="hidden" name="keperluan" class="form-control" value="Sebagai pengantar membuat KTP Elektronik">
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Surat Pengantar SKCK --}}
+<div class="modal fade" id="modalketpengantarSKCK" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-pengantar/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Pengantar Pembuatan SKCK</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>            
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+            </div>
+            <input required type="hidden" name="jenis" class="form-control" value="skck">
+            <input required type="hidden" name="keperluan" class="form-control" value="Sebagai pengantar pembuatan SKCK">
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Surat Keterangan Usaha --}}
+<div class="modal fade" id="modalketusaha" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-usaha/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Usaha</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>500 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="form-label">Bidang Usaha </label>
+                <input required type="text" name="bidang_usaha" class="form-control">  
+            </div>
+            <div class="form-group">
+                <label class="form-label">Jenis Usaha</label>
+                <input required type="text" name="jenis_usaha" class="form-control">  
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tahun Mulai Usaha</label>
+                <input required type="number" name="tahun_usaha" class="form-control">  
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Surat Keterangan Tanah --}}
+<div class="modal fade" id="modalkettanah" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-tanah/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Tanah</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>580 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+              </div>
+
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Blok </label>
+                      <input required type="text" name="tanah_blok" class="form-control">  
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Persil</label>
+                      <input required type="text" name="tanah_persil" class="form-control">  
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Luas Tanah</label>
+                      <div class="input-group">
+                          <input required type="number" name="tanah_luas" class="form-control" aria-label="Nomer Surat">
+                          <span class="input-group-addon"><b>m<sup>2</sup></b></span>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Luas Bangunan</label>
+                      <div class="input-group">
+                          <input required type="number" name="bangunan_luas" class="form-control" aria-label="Nomer Surat">
+                          <span class="input-group-addon"><b>m<sup>2</sup></b></span>
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="keterangan">Keterangan</label>
+                <textarea class="form-control" rows="2" name="tanah_keterangan" id="keterangan"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Surat Keterangan kematian --}}
+<div class="modal fade" id="modalketkematian" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-kematian/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Kematian</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474.3 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Tanggal</label>
+                      <input required type="date" name="tanggal_kematian" class="form-control">  
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="form-label">Pukul</label>
+                      <div class="input-group">
+                          <input required type="time" name="pukul_kematian" class="form-control" aria-label="Pukul Kematian">
+                          <span class="input-group-addon"><b>WIB</b></span>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Penyebab Kematian</label>
+                <input required type="text" name="penyebab_kematian" class="form-control">  
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tempat Kematian</label>
+                <input required type="text" name="tempat_kematian" class="form-control">  
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- Modal Surat Domisili --}}
 <div class="modal fade" id="modalketdomisili" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Keterangan Domisili</h4>
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-domisili/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Domisili</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474.1 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+                </div>
+
+            </div>
+            <div class="form-group">
+              <label class="form-label">Keterangan (Opsional - boleh dikosongi)</label>
+              <textarea class="form-control" rows="2" name="keterangan" id="keterangan"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
       </div>
-      <form method="GET" action="#">
-      <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Nomor Surat </label>
-            <input type="number" name="no_surat" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Keperluan </label>
-            <input type="text" name="keperluan" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Pamong </label>
-            <select name="pamong_id" required class="form-control" title="Pilih salah satu">
-              <option></option>
-            
-            </select>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Cetak</button>
-      </div>
-      </form>
-    </div>
+    </form>
   </div>
 </div>
-{{-- End Modal Ket Domisili --}}
-{{-- Modal SKCK --}}
-<div class="modal fade" id="modalskck" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+{{-- Modal Surat Domisili Lembaga --}}
+<div class="modal fade" id="modalketdomisililembaga" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalCenterTitle">Cetak SKCK</h4>
+    <form method="GET" action="{{ url('/') }}/modul-kependudukan/cetak-ket-domisili-lembaga/{{ $data->content[0]->NIK }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalCenterTitle">Cetak Surat Keterangan Domisili Lembaga</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nomor Surat </label>
+              <div class="input-group">
+                  <span class="input-group-addon"><b>474.1 / </b></span>
+                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nama Lembaga </label>
+                <input type="text" name="nama_lembaga" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Alamat Lembaga </label>
+                <div class="row">
+                  <div class="col-md-6">
+                      <div class="input-group">
+                          <span class="input-group-addon"><b>Desa</b></span>
+                          <input required type="text" name="nama_desa" value="{{ option()->desa->name }}" class="form-control" aria-label="Nomer Surat">
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="input-group">
+                          <span class="input-group-addon"><b>RT</b></span>
+                          <input required type="number" name="nomer_RT" class="form-control" aria-label="Nomer RT">
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="input-group">
+                          <span class="input-group-addon"><b>RW</b></span>
+                          <input required type="number" name="nomer_RW" class="form-control" aria-label="Nomer RW">
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Keterangan (Opsional - boleh dikosongi)</label>
+              <textarea class="form-control" rows="2" name="keterangan" id="keterangan"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pamong </label>
+              <select name="pamong_id" required class="form-control" title="Pilih salah satu">
+                <option></option>
+                @foreach($officials as $o)
+                <option value="{{ $o->id }}">{{ $o->name }} ({{ $o->jabatan }})</option>
+                @endforeach
+              </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Cetak</button>
+        </div>
       </div>
-      <form method="GET" action="#">
-      <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Nomor Surat </label>
-            <input type="number" name="no_surat" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Keperluan </label>
-            <input type="text" name="keperluan" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Pamong </label>
-            <select name="pamong_id" required class="form-control" title="Pilih salah satu">
-              <option></option>
-            
-            </select>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Cetak</button>
-      </div>
-      </form>
-    </div>
+    </form>
   </div>
 </div>
-{{-- End Modal SKCK --}}
-{{-- Modal SKTM --}}
-<div class="modal fade" id="modalsktm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalCenterTitle">Cetak SKTM</h4>
-      </div>
-      <form method="GET" action="#">
-      <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Nomor Surat </label>
-            <input type="number" name="no_surat" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Keperluan </label>
-            <input type="text" name="keperluan" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Pamong </label>
-            <select name="pamong_id" required class="form-control" title="Pilih salah satu">
-              <option></option>
-              
-            </select>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Cetak</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-{{-- End Modal SKTM --}}
+
 {{-- Modal Ket Kehilangan --}}
 <div class="modal fade" id="modalkehilangan" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -499,7 +943,8 @@
     </div>
   </div>
 </div>
-{{-- End Modal Ketkehilangan --}}
+
+
 {{-- Modal Izin Keramaian --}}
 <div class="modal fade" id="modalkeramaian" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

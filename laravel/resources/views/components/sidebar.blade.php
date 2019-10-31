@@ -3,7 +3,7 @@
     <div id="main-menu">
         <ul class="sidebar-nav">
             <li>
-                <a href="{{ url('dashboard') }}"><i class="fa fa-dashboard"></i><span class="sidebar-text">Dashboard</span></a>
+                <a href="{{ url('dashboard') }}"><i class="fa fa-home"></i><span class="sidebar-text">Profile Desa</span></a>
             </li>
             <li>
                 <a href="{{ url('modul-kependudukan') }}"><i class="fa fa-desktop"></i><span class="sidebar-text">Modul Penduduk</span></a>

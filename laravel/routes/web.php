@@ -75,6 +75,9 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
 
     Route::get('/penduduk/statistik', 'ModulKependudukanController@statistikKependudukan');
     Route::get('/penduduk/statistik/export', 'ModulKependudukanController@exportStatistikKependudukan');
+    
+    Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
+    Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
 
     //END=================================================================
 

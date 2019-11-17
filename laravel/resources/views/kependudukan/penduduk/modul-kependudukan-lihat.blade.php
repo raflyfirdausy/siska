@@ -57,7 +57,27 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="col-md-12 form-label">Tanggal Lahir</label>
-                    <input type="text" class="form-control" value="{{ $data->content[0]->TGL_LHR }}" disabled>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control" value="{{ $data->content[0]->TGL_LHR }}" disabled>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-md-12 form-label">Akta Lahir</label>
+                    <div class="col-md-12">
+                      <input disabled type="text" class="form-control" value="{{ $data->content[0]->NO_AKTA_LHR == NULL ? 'TIDAK ADA' : 'ADA' }}">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-md-12 form-label">Nomor Akta Lahir</label>
+                    <div class="col-md-12">
+                      <input disabled type="text" class="form-control" value="{{ $data->content[0]->NO_AKTA_LHR == NULL ? '-' : $data->content[0]->NO_AKTA_LHR }}">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -66,7 +86,7 @@
                   <div class="form-group">
                     <label class="col-md-12 form-label">Jenis Kelamin</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" value="{{ $data->content[0]->JENIS_KLMIN }}" disabled>
+                        <input type="text" class="form-control" value="{{ $data->content[0]->JENIS_KLMIN }}" disabled>
                     </div>
                   </div>
                 </div>
@@ -79,15 +99,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="col-md-12 form-label">Kewarganegaraan</label>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control" value="BELUM" disabled>
-                    </div>
-                  </div>
-                </div>
+              <div class="row">                
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="col-md-12 form-label">Agama</label>
@@ -96,31 +108,33 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <div class="form-group">
                     <label class="col-md-12 form-label">Status Perkawinan</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" value="{{ $data->content[0]->STATUS_KAWIN }}" disabled>
+                      @php
+                        
+                        $tercatat = $data->content[0]->TGL_KWN == NULL ? FALSE : TRUE; 
+                        $kawin = $data->content[0]->STATUS_KAWIN;
+
+                        if($kawin == "KAWIN"){
+                          $statusKawin = $kawin;
+                          $statusKawin .= $tercatat ?  ' TERCATAT' : ' BELUM TERCATAT';
+                        } else {
+                          $statusKawin = $kawin;
+                        }
+                      @endphp
+                      <input class="form-control" type="text" class="form-control" value="{{ $statusKawin }}" disabled>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <!-- <div class="form-group">
-                    <label class="col-md-12 form-label">Status Kependudukan</label>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control" value="TIDAK DIKETAHUI" disabled>
-                    </div>
-                  </div> -->
-                </div>
               </div>
-              <div class="row">
+              <div class="row">                
                 <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="col-md-12 form-label">Pendidikan Terakhir</label>
+                   <div class="form-group">
+                    <label class="col-md-12 form-label">TANGGAL KAWIN</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" value="{{ $data->content[0]->PDDK_AKH }}" disabled>
+                      <input type="text" class="form-control" value="{{ $data->content[0]->TGL_KWN == NULL ? "-" : $data->content[0]->TGL_KWN }}" disabled>
                     </div>
                   </div>
                 </div>
@@ -132,6 +146,16 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="col-md-12 form-label">Pendidikan Terakhir</label>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control" value="{{ $data->content[0]->PDDK_AKH }}" disabled>
+                    </div>
+                  </div>
+                </div>                
                 <div class="col-sm-9 col-sm-offset-3">
                   <div class="pull-right">
                     <a href="{{ url('modul-kependudukan') }}" class="btn btn-default">Kembali</a>
@@ -229,10 +253,11 @@
         </div>
         <div class="modal-body">
             <div class="form-group">
-              <label class="form-label">Nomor Surat </label>
+              <span>Nomor Surat Terakhir : <b class="no_slur"> Loading ...</b></span><br>                 
+              <label class="form-label">Nomor Surat </label>         
               <div class="input-group">
                   <span class="input-group-addon"><b>400 / </b></span>
-                  <input required type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <input required onkeyup="cekKodeSurat('400')" type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
                   <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
                 </div>
             </div>
@@ -1585,7 +1610,7 @@
 {{-- End Modal Biodata --}}
   <script>
 
-    var url = "{{ URL::to('/') }}";
+    let url = "{{ URL::to('/') }}";
     
     function chooseResident(nik, name) {
       $('#n1k').attr('value', nik);
@@ -1781,6 +1806,68 @@
         });
         }
     }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    function coba(){
+      alert("jasdjasjdasdasidjasdaosbfoabsfo");
+    }
+
+    function delay(callback, ms) {
+        var timer = 0;
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+            callback.apply(context, args);
+            }, ms || 0);
+        };
+    }
+
+    function cekKodeSurat(kode){      
+      let input = $("input[name = 'no_surat']");  
+
+      let kodeSurat = kode + " / " + input.val() + " / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}";            
+      $.ajax({
+          type: 'GET',
+          url: '{{ URL::to("/cek-no-surat?no=") }}' + kodeSurat,
+          dataType: 'json',
+          success: function(x){
+            if(x.count > 0 || input.val().length < 1){
+              $('button[type="submit"]').prop('disabled', true);
+            } else {              
+              $('button[type="submit"]').prop('disabled', false);
+            }
+          }
+      });
+    }
+
+    $(".modal").on('shown.bs.modal', function (e) {
+      let id = this.id;
+      let keterangan = "";
+      $('form').trigger("reset");
+      $('button[type="submit"]').prop('disabled', true);
+      switch(id){
+        case "modalkettidakmampu":
+          getNoSuratTerakhir(400);
+        break;
+      }      
+    });
+
+    function getNoSuratTerakhir(kode){
+        $.ajax({
+          type: 'GET',
+          url: '{{ URL::to("/get-no-surat-terakhir?kode=") }}' + kode,
+          dataType: 'json',
+          success: function(x){
+            if(x.result == null){
+              $(".no_slur").text("Belum ada surat yang terdaftar untuk jenis surat ini");
+            } else {              
+              $(".no_slur").text(x.result.nomer);                
+            }
+          }
+      });
+    }
     
     $(document).ready(function() {
       $('#n1k').on('keyup', getResident);
@@ -1791,6 +1878,7 @@
       $('#dup-lahir-nik-anak').on('keyup', getAnak);
       $('#pernyataan-akta-nik-ibu').on('keyup', getIbuAkta);
       $('#pernyataan-akta-nik-ayah').on('keyup', getAyahAkta);
+      $('button[type="submit"]').prop('disabled', true);
     });
     </script>
 {{-- End Bio Penduduk --}}

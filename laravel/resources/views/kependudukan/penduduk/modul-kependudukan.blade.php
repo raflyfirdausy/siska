@@ -13,8 +13,8 @@ Daftar Pemilih Tetap |
 
 {{-- Judul halaman --}}
 @section('page-title')
-<strong>Testing </strong> Modul Kependudukan<br>
-Nik Contoh : <strong>3304061303090001 / 3304062007780002 / 3304064308830001</strong>
+<strong>Input </strong> NIK Data Penduduk<br>
+{{-- Nik Contoh : <strong>3304061303090001 / 3304062007780002 / 3304064308830001</strong> --}}
 @endsection
 
 {{-- Isi dari halaman, konten utama dari suatu halaman --}}

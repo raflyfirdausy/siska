@@ -7,7 +7,11 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Helpers\TemplateReplacer;
 use App\Models\General\Official;
+use App\Models\Option;
+use App\Models\Surat;
+use Illuminate\Support\Facades\DB;
 
+use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
 
 class ModulKependudukanController extends Controller
@@ -51,13 +55,29 @@ class ModulKependudukanController extends Controller
 
     public function getLink($nik)
     {
-        if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-            $linkRequest = asset("json/$nik.json");
-            return $linkRequest;
-        } else {
-            // $linkRequest = asset("json/tidak_ditemukan.json");
-            return redirect('/modul-kependudukan');
-        }
+        $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
+
+        return $link;
+
+        // if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
+        //     $linkRequest = asset("json/$nik.json");
+        //     return $linkRequest;
+        // } else {
+        //     // $linkRequest = asset("json/tidak_ditemukan.json");
+        //     return redirect('/modul-kependudukan');
+        // }
+    }
+
+    public function cekNoSurat(Request $requset){
+        return response()->json([
+            'count' => Surat::where("nomer", $requset->no)->count(),            
+        ]);        
+    }
+
+    public function cekNoSuratTerakhir(Request $requset){
+        return response()->json([
+            'result' => Surat::where("nomer", "LIKE",  "$requset->kode%")->latest('id')->first(),            
+        ]);        
     }
 
     public function print_keterangan_tidak_mampu(Request $request, $nik)
@@ -65,7 +85,7 @@ class ModulKependudukanController extends Controller
         $pamong = Official::find($request->pamong_id);
         $data = json_decode(file_get_contents($this->getLink($nik)));
         $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
-        $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
         $defaultKeterangan = "Bahwa orang tersebut diatas benar - benar berasal dari keluarga tidak mampu ";
 
         $replace = [
@@ -84,7 +104,7 @@ class ModulKependudukanController extends Controller
             'nik'               => $data->content[0]->NIK,
             'nama'              => $data->content[0]->NAMA_LGKP,
             'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
             'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
             'warga_negara'      => "INDONESIA",
@@ -103,55 +123,43 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_tidak_mampu.rtf';
-        $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
 
-        return TemplateReplacer::replace($file, $replace, $filename);
+        $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
+                
+        if(json_decode($this->cekNoSurat($noSurat)->getContent())->count == 0){
+            Surat::create([
+            "nomer"     => $noSurat,
+            "tanggal"   => date("Y-m-d"),
+            "perihal"   => "SURAT KETERANGAN TIDAK MAMPU " . $data->content[0]->NAMA_LGKP,
+            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+            "type"      => "Surat Keterangan Tidak Mampu",
+            "jenis"     => "keluar",
+            "nik"       => $nik
+        ]);
+            return TemplateReplacer::replace($file, $replace, $filename);    
+        } else {
+            return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
+        }                        
     }
 
     public function modulKependudukanDetail($nik)
     {
-        // $linkRequest = "http://localhost/tes/request.php?nik=";
-        // $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
-        //3304061303090001
-        if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-            $linkRequest = asset("json/$nik.json");
-        } else {
-            // $linkRequest = asset("json/tidak_ditemukan.json");
-            return redirect('/modul-kependudukan');
-        }
-
-
-        // $data = json_decode(file_get_contents($linkRequest . $nik));
-        $data = json_decode(file_get_contents($linkRequest));
-        // die(json_encode($data));
-
+        $data = json_decode(file_get_contents($this->getLink($nik)));
         $officials = Official::all();
-
         return view('kependudukan.penduduk.modul-kependudukan-lihat', compact('data', 'officials'));
     }
 
     public function modulKependudukan(Request $request)
     {
-        // die(url('/'));
-        // $linkRequest = "http://localhost/tes/request.php?nik=";
-        // $linkRequest = "http://10.33.4.24:8081/ws_server/get_json/tlagawera/carinik?USER_ID=TLAGAWERA&PASSWORD=12345&NIK=";
         $linkRequest = asset("json/tidak_ditemukan.json");
-
         if ($request->has('nik')) {
             $nik = $request->input('nik');
-            if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-                $linkRequest = asset("json/$nik.json");
-            } else {
-                $linkRequest = asset("json/tidak_ditemukan.json");
-            }
-            // $data = json_decode(file_get_contents($linkRequest . $nik));
-            $data = json_decode(file_get_contents($linkRequest));
+            $data = json_decode(file_get_contents($this->getLink($nik)));
 
             if (!isset($data->content->RESPON)) {
                 $bday = new \DateTime($data->content[0]->TGL_LHR); // Your date of birth
                 $today = new \Datetime(date('Y-m-d'));
                 $diff = $today->diff($bday);
-
                 $data->content[0]->AGE = $diff->y;
             }
             $data->status = !isset($data->content->RESPON) ? 200 : 404;
@@ -159,9 +167,6 @@ class ModulKependudukanController extends Controller
             $data = json_decode(file_get_contents($linkRequest));
             $data->status = 400;
         }
-
-        //die(json_encode($data));
-        // die(asset());
         $officials = Official::all();
         return view('kependudukan.penduduk.modul-kependudukan', compact('data', 'officials'));
     }
@@ -171,7 +176,7 @@ class ModulKependudukanController extends Controller
         $pamong = Official::find($request->pamong_id);
         $data = json_decode(file_get_contents($this->getLink($nik)));
         $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
-        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');        
+        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
 
         $replace = [
             'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
@@ -187,9 +192,9 @@ class ModulKependudukanController extends Controller
             'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
 
             'nik'               => $data->content[0]->NIK,
-            'NAMA'              => $data->content[0]->NAMA_LGKP,
+            'ABCNAMA'           => $data->content[0]->NAMA_LGKP,
             'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
             'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
             'warga_negara'      => "INDONESIA",
@@ -204,11 +209,11 @@ class ModulKependudukanController extends Controller
 
             'BENAR_NIK'         => $request->benar_nik,
             'BNR_NM'            => $request->benar_nama,
-            'BENAR_TEMPAT_LAHIR'=> $request->benar_tempat_lahir,
+            'BENAR_TEMPAT_LAHIR' => $request->benar_tempat_lahir,
             'BENAR_TGL_LAHIR'   => $this->getTanggalIndo($request->benar_tanggal_lahir),
-            'BENAR_JENIS_KELAMIN'=> $request->benar_jenis_kelamin,
+            'BENAR_JENIS_KELAMIN' => $request->benar_jenis_kelamin,
             'benar_stts_kwn'    => $request->benar_status_perkawinan,
-            'BENAR_WARGA_NEGARA'=> $request->benar_warga_negara,
+            'BENAR_WARGA_NEGARA' => $request->benar_warga_negara,
             'BENAR_AGAMA'       => $request->benar_agama,
             'BENAR_PEKERJAAN'   => $request->benar_pekerjaan,
             'BENAR_ALAMAT'      => $request->benar_alamat
@@ -217,7 +222,8 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_beda_nama_identitas.rtf';
-        $filename = 'SURAT_KETERANGAN_BEDA_NAMA_IDENTITAS_' . $request->benar_nama . '_' . $date . '.doc';
+        
+        $filename = 'SURAT_KETERANGAN_BEDA_NAMA_IDENTITAS_' . preg_replace("/[^A-Za-z0-9]/", "_", $request->benar_nama) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -228,9 +234,9 @@ class ModulKependudukanController extends Controller
         $data = json_decode(file_get_contents($this->getLink($nik)));
         $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
         $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
-        $defaultKeterangan  =   $request->nama_lembaga ." benar - benar berdomisili dan beroperasi di Desa " . $request->nama_desa .
-                                " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name . 
-                                ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
+        $defaultKeterangan  =   $request->nama_lembaga . " benar - benar berdomisili dan beroperasi di Desa " . $request->nama_desa .
+            " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name .
+            ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
 
         $replace = [
             'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
@@ -248,7 +254,7 @@ class ModulKependudukanController extends Controller
             'nik'               => $data->content[0]->NIK,
             'nama'              => $data->content[0]->NAMA_LGKP,
             'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
             'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
             'warga_negara'      => "INDONESIA",
@@ -263,8 +269,8 @@ class ModulKependudukanController extends Controller
 
             'LEMBAGA_NAMA'      => $request->nama_lembaga,
             'LEMBAGA_ALAMAT'    => "Desa " . $request->nama_desa .
-                                   " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name . 
-                                   ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+                " RT " . $request->nomer_RT . " RW " . $request->nomer_RW . ", Kec. " . option()->kecamatan->name .
+                ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
             'KET_LEMBAGA'       => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
 
         ];
@@ -282,10 +288,10 @@ class ModulKependudukanController extends Controller
         $data = json_decode(file_get_contents($this->getLink($nik)));
         $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
         $noSurat = "474.1 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
-        $defaultKeterangan = "Orang tersebut benar - benar warga Desa " . 
-                                option()->desa->name . " yang berdomisili di " . 
-                                $data->content[0]->ALAMAT . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW .
-                                ", Kec. " . option()->kecamatan->name . ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
+        $defaultKeterangan = "Orang tersebut benar - benar warga Desa " .
+            option()->desa->name . " yang berdomisili di " .
+            $data->content[0]->ALAMAT . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW .
+            ", Kec. " . option()->kecamatan->name . ", Kab. " . ucfirst(strtolower(substr(option()->kabupaten->name, 5)));
 
         $replace = [
             'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
@@ -303,7 +309,7 @@ class ModulKependudukanController extends Controller
             'nik'               => $data->content[0]->NIK,
             'nama'              => $data->content[0]->NAMA_LGKP,
             'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
             'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
             'warga_negara'      => "INDONESIA",
@@ -321,8 +327,8 @@ class ModulKependudukanController extends Controller
         ];
 
         $date = date('d_M_Y_H_i_s', time());
-        $file = 'surat_keterangan_domisili.rtf';
-        $filename = 'SURAT_KETERANGAN_DOMISILI_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        $file = 'surat_keterangan_domisili.rtf';        
+        $filename = 'SURAT_KETERANGAN_DOMISILI_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -350,7 +356,7 @@ class ModulKependudukanController extends Controller
             'nik'               => $data->content[0]->NIK,
             'nama'              => $data->content[0]->NAMA_LGKP,
             'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR), 
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
             'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
             'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
             'warga_negara'      => "INDONESIA",
@@ -372,7 +378,7 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_kematian.rtf';
-        $filename = 'SURAT_KETERANGAN_KEMATIAN_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        $filename = 'SURAT_KETERANGAN_KEMATIAN_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -411,7 +417,7 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_tanah.rtf';
-        $filename = 'SURAT_KETERANGAN_TANAH_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        $filename = 'SURAT_KETERANGAN_TANAH_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -459,7 +465,7 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_usaha.rtf';
-        $filename = 'SURAT_KETERANGAN_USAHA_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        $filename = 'SURAT_KETERANGAN_USAHA_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -500,7 +506,8 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_permohonan_pendataan_ulang.rtf';
-        $filename = 'SURAT_PERMOHONAN_PENDATAAN_ULANG_' . strtoupper($request->nama_lengkap) . '_' . $date . '.doc';
+        
+        $filename = 'SURAT_PERMOHONAN_PENDATAAN_ULANG_' . preg_replace("/[^A-Za-z0-9]/", "_", strtoupper($request->nama_lengkap)) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }
@@ -547,7 +554,8 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_pengantar.rtf';
-        $filename = 'SURAT_PENGANTAR_' . $data->content[0]->NAMA_LGKP . '_' . $date . '.doc';
+        
+        $filename = 'SURAT_PENGANTAR_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
     }

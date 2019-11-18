@@ -79,6 +79,8 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
     Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
 
+    Route::get('/surat-keluars', 'SuratController@getSurat');
+
     //END=================================================================
 
 

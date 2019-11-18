@@ -307,6 +307,7 @@
             <div class="form-group">
               <label class="form-label">Keperluan </label>
               <input required type="text" name="keperluan" class="form-control">
+              <input type="hidden" name="kode_keperluan" value="1">            
             </div>
             {{-- <div class="row">
               <div class="col-xs-6">
@@ -361,6 +362,7 @@
                 </div>
             </div>
             <input required type="hidden" name="keperluan" class="form-control" value="Sebagai pengantar membuat KTP Elektronik">
+            <input type="hidden" name="kode_keperluan" value="2">
             <div class="form-group">
               <label class="form-label">Pamong </label>
               <select name="pamong_id" required class="form-control" title="Pilih salah satu">
@@ -401,6 +403,7 @@
             </div>
             <input required type="hidden" name="jenis" class="form-control" value="skck">
             <input required type="hidden" name="keperluan" class="form-control" value="Sebagai pengantar pembuatan SKCK">
+            <input type="hidden" name="kode_keperluan" value="3">
             <div class="form-group">
               <label class="form-label">Pamong </label>
               <select name="pamong_id" required class="form-control" title="Pilih salah satu">
@@ -434,8 +437,8 @@
               <span>Nomor Surat Terakhir : <b class="no_slur"> Loading ...</b></span><br>  
               <label class="form-label">Nomor Surat </label>
               <div class="input-group">
-                  <span class="input-group-addon"><b>474.3 / </b></span>
-                  <input required onkeyup="cekKodeSurat(this, '474.3')" type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
+                  <span class="input-group-addon"><b>474 / </b></span>
+                  <input required onkeyup="cekKodeSurat(this, '474')" type="number" name="no_surat" class="form-control" aria-label="Nomer Surat">
                   <span class="input-group-addon"><b> / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}</b></span>
               </div>
             </div>
@@ -840,7 +843,7 @@
   </div>
 </div>
 
-{{-- ========================================================================================= --}}
+{{-- =============================================================================================== --}}
 
 {{-- Modal Ket Kehilangan --}}
 <div class="modal fade" id="modalkehilangan" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

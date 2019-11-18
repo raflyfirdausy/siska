@@ -74,72 +74,16 @@ class ModulKependudukanController extends Controller
         ]);        
     }
 
+    public function cekNoSurat_($noSurat){
+        return response()->json([
+            'count' => Surat::where("nomer", $noSurat)->count(),            
+        ]); 
+    }
+
     public function cekNoSuratTerakhir(Request $requset){
         return response()->json([
             'result' => Surat::where("nomer", "LIKE",  "$requset->kode%")->latest('id')->first(),            
         ]);        
-    }
-
-    public function print_keterangan_tidak_mampu(Request $request, $nik)
-    {
-        $pamong = Official::find($request->pamong_id);
-        $data = json_decode(file_get_contents($this->getLink($nik)));
-        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
-        $noSurat = "474 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
-        $defaultKeterangan = "Bahwa orang tersebut diatas benar - benar berasal dari keluarga tidak mampu ";
-
-        $replace = [
-            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
-            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
-            'judul_desa'        => strtoupper(option()->desa->name),
-            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
-            'alamatdesa'        => $alamatDesaLengkap,
-            'nomor_surat'       => $noSurat,
-            'jabatan'           => $pamong->jabatan,
-            'desa'              => option()->desa->name,
-            'kecamatan'         => option()->kecamatan->name,
-            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
-            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
-
-            'nik'               => $data->content[0]->NIK,
-            'nama'              => $data->content[0]->NAMA_LGKP,
-            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
-            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
-            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
-            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
-            'warga_negara'      => "INDONESIA",
-            'agama'             => $data->content[0]->AGAMA,
-            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
-            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
-
-            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
-            'pamong'            => strtoupper($pamong->name),
-            'nip'               => $pamong->nip,
-            'pemegang'          => $data->content[0]->NAMA_LGKP,
-
-            'SKTM_KETERANGAN'   => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
-
-        ];
-
-        $date = date('d_M_Y_H_i_s', time());
-        $file = 'surat_keterangan_tidak_mampu.rtf';
-
-        $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
-                
-        if(json_decode($this->cekNoSurat($noSurat)->getContent())->count == 0){
-            Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN TIDAK MAMPU " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "Surat Keterangan Tidak Mampu",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
-        } else {
-            return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
-        }                        
     }
 
     public function modulKependudukanDetail($nik)
@@ -560,6 +504,69 @@ class ModulKependudukanController extends Controller
         return TemplateReplacer::replace($file, $replace, $filename);
     }
 
+    public function print_keterangan_tidak_mampu(Request $request, $nik)
+    {
+        $pamong = Official::find($request->pamong_id);
+        $data = json_decode(file_get_contents($this->getLink($nik)));
+        $alamatDesaLengkap = option()->office_address . ", " . option()->kecamatan->name . ", Telp " . option()->phone . " Kode Pos " . option()->postal_code;
+        $noSurat = "400 / " . $request->no_surat . " / Ds. " . ucfirst(strtolower(option()->desa->name)) . " / " . date('Y');
+        $defaultKeterangan = "Bahwa orang tersebut diatas benar - benar berasal dari keluarga tidak mampu ";
+
+        $replace = [
+            'judul_kabupaten'   => substr(option()->kabupaten->name, 5),
+            'judul_kecamatan'   => strtoupper(option()->kecamatan->name),
+            'judul_desa'        => strtoupper(option()->desa->name),
+            'kop_jenis'         => $pamong->jabatan == "Kepala Desa" ? "KEPALA DESA" : "SEKRETARIAT DESA",
+            'alamatdesa'        => $alamatDesaLengkap,
+            'nomor_surat'       => $noSurat,
+            'jabatan'           => $pamong->jabatan,
+            'desa'              => option()->desa->name,
+            'kecamatan'         => option()->kecamatan->name,
+            'kabupaten'         => ucfirst(strtolower(substr(option()->kabupaten->name, 5))),
+            'provinsi'          => ucwords(strtolower(option()->provinsi->name)),
+
+            'nik'               => $data->content[0]->NIK,
+            'nama'              => $data->content[0]->NAMA_LGKP,
+            'tempat_lahir'      => $data->content[0]->TMPT_LHR,
+            'tanggal_lahir'     => $this->getTanggalIndo($data->content[0]->TGL_LHR),
+            'jenis_kelamin'     => $data->content[0]->JENIS_KLMIN,
+            'STATUS_KAWIN'      => $data->content[0]->STATUS_KAWIN,
+            'warga_negara'      => "INDONESIA",
+            'agama'             => $data->content[0]->AGAMA,
+            'pekerjaan'         => $data->content[0]->JENIS_PKRJN,
+            'alamat_tinggal'    => ucwords(strtolower($data->content[0]->ALAMAT)) . " RT " . $data->content[0]->NO_RT . " RW " .  $data->content[0]->NO_RW,
+
+            'tanggal_indo'      => $this->getTanggalIndo(date('Y-m-d')),
+            'pamong'            => strtoupper($pamong->name),
+            'nip'               => $pamong->nip,
+            'pemegang'          => $data->content[0]->NAMA_LGKP,
+
+            'SKTM_KETERANGAN'   => isset($request->keterangan) ? $request->keterangan : $defaultKeterangan
+
+        ];
+
+        $date = date('d_M_Y_H_i_s', time());
+        $file = 'surat_keterangan_tidak_mampu.rtf';
+
+        $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
+                
+        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+            Surat::create([
+            "nomer"     => $noSurat,
+            "tanggal"   => date("Y-m-d"),
+            "perihal"   => "SURAT KETERANGAN TIDAK MAMPU " . $data->content[0]->NAMA_LGKP,
+            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+            "type"      => "Surat Keterangan Tidak Mampu",
+            "jenis"     => "keluar",
+            "nik"       => $nik
+        ]);
+            return TemplateReplacer::replace($file, $replace, $filename);    
+        } else {
+            return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
+        }                        
+    }
+
+    
     public function statistikKependudukan()
     {
 

@@ -78,8 +78,10 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     
     Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
     Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
+    Route::get('/cek-no-surat-lengkap', 'SuratController@cekKodeSuratLengkap');
 
-    Route::get('/surat-keluar', 'SuratController@getSurat');
+    Route::get('/surat-keluar', 'SuratController@getSuratKeluar');
+    Route::get('/download-surat-keluar', 'SuratController@downloadSuratKeluar');
 
     //END=================================================================
 

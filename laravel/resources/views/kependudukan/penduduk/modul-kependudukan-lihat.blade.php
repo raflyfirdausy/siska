@@ -1811,7 +1811,7 @@
         };
     }
 
-    function cekKodeSurat(input, kode){                  
+    function cekKodeSurat(input, kode){
       let kodeSurat = kode + " / " + input.value + " / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}";      
       $.ajax({
           type: 'GET',

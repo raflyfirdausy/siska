@@ -12,9 +12,14 @@ class SuratController extends Controller
     public function getSurat(Request $request)
     {
         $surat  = Surat::latest('id')->where('jenis', 'keluar');
-        if ($request->input('q') != "" || $request->input('tahun') != "") {
+        if (
+            $request->input('q') != "" ||
+            $request->input('tahun') != "" ||
+            $request->input('jenis') != ""
+        ) {
             $q      = $request->input('q');
             $tahun  = $request->input('tahun');
+            $jenis  = $request->input('jenis');
 
             if ($q != "") {
                 $surat->where(function ($query) use ($q) {
@@ -33,6 +38,12 @@ class SuratController extends Controller
                     $query2->whereYear("tanggal", "=", $tahun);
                 });
             }
+
+            if($jenis != "" && $jenis != "semua"){
+                $surat->where(function ($query2) use ($jenis) {
+                    $query2->where("type", "=", $jenis);
+                });
+            }
         }
 
         $surat = $surat->paginate(10);
@@ -40,7 +51,7 @@ class SuratController extends Controller
         $jenis  = Surat::distinct()->get(["type"]);
         $tahun  = Surat::select(DB::raw('YEAR(created_at) as tahun'))->distinct()->get();
         $type   = "Keluar";
-        // die(json_encode($surat));
+        // die(json_encode($jenis[0]->type));
         return view('kesekretariatan.surat.index2', compact('surat', 'jenis', 'tahun', 'type'));
     }
 }

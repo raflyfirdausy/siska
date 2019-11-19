@@ -25,7 +25,7 @@
         <div class="row">
           <form method="GET" action="{{ url()->current() }}" class="form-horizontal">
             <div class="col-md-10" style="padding-left: 0;">
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <div class="input-group">
                   <span class="input-group-addon" id="addon"><i class="fa fa-search"></i></span>
                   <input name="q" type="text" class="form-control" placeholder="Cari ..." aria-describedby="addon">
@@ -36,6 +36,15 @@
                     <option></option>
                     @foreach($tahun as $t)
                     <option value="{{ $t->tahun }}">{{ $t->tahun }}</option>
+                    @endforeach
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select name="jenis" class="form-control" title="Pilih Jenis Surat">
+                    <option></option>                    
+                    <option value="semua">Semua</option>
+                    @foreach($jenis as $j)
+                      <option value="{{ $j->type }}">{{ ucfirst(strtolower($j->type)) }}</option>
                     @endforeach
                 </select>
               </div>

@@ -79,7 +79,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
     Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
 
-    Route::get('/surat-keluars', 'SuratController@getSurat');
+    Route::get('/surat-keluar', 'SuratController@getSurat');
 
     //END=================================================================
 
@@ -216,7 +216,7 @@ Route::middleware(['auth', 'access:surat'])->group(function() {
     Route::post('/surat-masuk/{id}/ubah', 'Secretariat\InboxController@update');
     Route::post('/surat-masuk/{id}/hapus', 'Secretariat\InboxController@destroy');
 
-    Route::get('/surat-keluar', 'Secretariat\OutboxController@index');
+    // Route::get('/surat-keluar', 'Secretariat\OutboxController@index');
     Route::get('/surat-keluar/tambah', 'Secretariat\OutboxController@create');
     Route::post('/surat-keluar/tambah', 'Secretariat\OutboxController@store');
     Route::get('/surat-keluar/{id}/ubah', 'Secretariat\OutboxController@edit');

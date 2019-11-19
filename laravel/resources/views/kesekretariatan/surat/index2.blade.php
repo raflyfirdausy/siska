@@ -24,22 +24,14 @@
       <div class="panel-body">
         <div class="row">
           <form method="GET" action="{{ url()->current() }}" class="form-horizontal">
-            <div class="col-md-10" style="padding-left: 0;">
-              <div class="col-md-3">
+            <div class="col-md-7" style="padding-left: 0;">
+              <div class="col-md-4" style="padding-right:0; padding-left: 5dp;">
                 <div class="input-group">
                   <span class="input-group-addon" id="addon"><i class="fa fa-search"></i></span>
                   <input name="q" type="text" class="form-control" placeholder="Cari ..." aria-describedby="addon">
                 </div>
-              </div>
-              <div class="col-md-3">
-                <select name="tahun" class="form-control" title="Pilih Tahun">
-                    <option></option>
-                    @foreach($tahun as $t)
-                    <option value="{{ $t->tahun }}">{{ $t->tahun }}</option>
-                    @endforeach
-                </select>
-              </div>
-              <div class="col-md-3">
+              </div>              
+              <div class="col-md-4" style="padding-right:0;">
                 <select name="jenis" class="form-control" title="Pilih Jenis Surat">
                     <option></option>                    
                     <option value="semua">Semua</option>
@@ -48,16 +40,25 @@
                     @endforeach
                 </select>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3" style="padding-right:0;">
+                <select name="tahun" class="form-control" title="Tahun">
+                    <option></option>
+                    @foreach($tahun as $t)
+                    <option value="{{ $t->tahun }}">{{ $t->tahun }}</option>
+                    @endforeach
+                </select>
+              </div>
+              <div class="col-md-1">
                 <div class="input-group">
                   <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
               </div>
             </div>
           </form>
-          <div class="col-md-2">
+          <div class="col-md-5">
             <div class="pull-right">
-            <a href="{{ url("surat-{$type}/tambah") }}" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</a>
+              <a href="{{ url("surat-{$type}/tambah") }}" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</a>                   
+              <a href="{{ url("surat-{$type}/tambah") }}" class="btn btn-danger"><i class="fa fa-download"></i> Export</a>                   
             </div>
           </div>
         </div>
@@ -122,6 +123,7 @@
       </div>
     </div>
   </div>
+  
   <div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Surat;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-use function GuzzleHttp\json_encode;
 
 class SuratController extends Controller
 {

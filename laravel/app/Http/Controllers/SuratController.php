@@ -63,7 +63,7 @@ class SuratController extends Controller
         $surat  = $surat->paginate(10);
         $jenis  = Surat::distinct()->get(["type"]);
         $tahun  = Surat::select(DB::raw('YEAR(created_at) as tahun'))->distinct()->get();
-        $type   = "Keluar";
+        $type   = "keluar";
         $ket    = [
             "q"     => $request->input('q'),
             "tahun" => $request->input('tahun'),
@@ -138,6 +138,7 @@ class SuratController extends Controller
         $worksheet      = $spreadsheet->getActiveSheet();
 
         //SET DATA
+        $worksheet->getCell('A1')->setValue("BUKU AGENDA SURAT KELUAR");
         $worksheet->getCell('A2')->setValue("Desa " . option()->desa->name . ", Kecamatan " . option()->kecamatan->name);
         $worksheet->getCell('C4')->setValue(": " . $jenis);
         $worksheet->getCell('C5')->setValue(": " . $tahun);
@@ -165,6 +166,166 @@ class SuratController extends Controller
 
         $writer = new Xlsx($spreadsheet);
         $filename = "BUKU_AGENDA_SURAT_KELUAR_" . strtoupper($jenis) . "_TH_" . $tahun . "_EXPORTED_" . date("d_m_Y_H_i_s");
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    public function getDataSuratMasuk(Request $request, $order = "DESC")
+    {
+        $surat  = Surat::orderBy('created_at', $order)->where('jenis', 'masuk');
+        if (
+            $request->input('q') != "" ||
+            $request->input('tahun') != "" ||
+            $request->input('jenis') != ""
+        ) {
+            $q      = $request->input('q');
+            $tahun  = $request->input('tahun');
+            $jenis  = $request->input('jenis');
+
+            if ($q != "") {
+                $surat->where(function ($query) use ($q) {
+                    $query->where('nomer', 'LIKE', "%$q%")
+                        ->orWhere('tanggal', 'LIKE', "%$q%")
+                        ->orWhere('perihal', 'LIKE', "%$q%")
+                        ->orWhere('dari', 'LIKE', "%$q%")
+                        ->orWhere('type', 'LIKE', "%$q%")
+                        ->orWhere('jenis', 'LIKE', "%$q%")
+                        ->orWhere('nik', 'LIKE', "%$q%");
+                });
+            }
+
+            if ($tahun != "" && $tahun != "semua") {
+                $surat->where(function ($query2) use ($tahun) {
+                    $query2->whereYear("tanggal", "=", $tahun);
+                });
+            }
+
+            if ($jenis != "" && $jenis != "semua") {
+                $surat->where(function ($query2) use ($jenis) {
+                    $query2->where("type", "=", $jenis);
+                });
+            }
+        }
+        return $surat;
+    }
+    
+
+    public function getSuratMasuk(Request $request)
+    {
+        $surat  = $this->getDataSuratMasuk($request);
+        $surat  = $surat->paginate(10);
+        $jenis  = Surat::distinct()->get(["type"]);
+        $tahun  = Surat::select(DB::raw('YEAR(created_at) as tahun'))->distinct()->get();
+        $type   = "masuk";
+        $ket    = [
+            "q"     => $request->input('q'),
+            "tahun" => $request->input('tahun'),
+            "jenis" => $request->input('jenis')
+        ];
+        return view('kesekretariatan.surat.index2', compact('surat', 'jenis', 'tahun', 'type', 'ket'));
+    }
+
+    public function addSuratMasukManual(Request $request)
+    {
+        Surat::create([
+            "nomer"     => $request->input('no_surat'),
+            "tanggal"   => $request->input('tanggal_surat'),
+            "type"      => $request->input('jenis_surat'),
+            "dari"      => $request->input('pengirim'),
+            "perihal"   => $request->input('perihal'),
+            "jenis"     => "masuk",
+            "type"      => "surat masuk",
+            "nik"       => NULL
+        ]);
+        return redirect('/surat-masuk')->with('success', 'Penambahan surat masuk baru berhasil dilakukan!');
+    }
+
+    public function editSuratMasuk(Request $request)
+    {
+        $surat = Surat::where('id', $request->input("id_surat"))->firstOrFail();
+        $surat->update([
+            "nomer"     => $request->input('no_surat'),
+            "tanggal"   => $request->input('tanggal_surat'),
+            "type"      => $request->input('jenis_surat'),  
+            "dari"      => $request->input('pengirim'),          
+            "perihal"   => $request->input('perihal'),
+            "type"      => "surat masuk",
+        ]);
+        return redirect('/surat-masuk')->with('success', 'Edit surat masuk berhasil dilakukan!');
+    }
+
+    public function hapusSuratMasuk(Request $request){
+        $surat = Surat::where('id', $request->input("hapus_id"))->firstOrFail();
+        $surat->delete();
+        return redirect('/surat-masuk')->with('success', 'Hapus surat masuk berhasil dilakukan!');
+    }
+
+    public function downloadSuratMasuk(Request $request)
+    {
+        $surat  = $this->getDataSuratMasuk($request, "ASC")->get();
+
+        $jenis  = $request->input('jenis') == "" ? "Semua" : $request->input('jenis');
+        $tahun  = $request->input('tahun') == "" ? "Semua" : $request->input('tahun');
+
+        $styleJudul = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText'      => TRUE
+            ]
+        ];
+
+        $styleBorder = [            
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                    'color' => ['rgb' => '000000'],
+                ],
+            ],
+        ];
+
+        $inputFileType  = 'Xlsx';
+        $inputFileName  = "public/format_surat/agenda_surat_masuk.xlsx";
+        $reader         = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet    = $reader->load($inputFileName);
+        $worksheet      = $spreadsheet->getActiveSheet();
+
+        //SET DATA
+        $worksheet->getCell('A1')->setValue("BUKU AGENDA SURAT MASUK");
+        $worksheet->getCell('A2')->setValue("Desa " . option()->desa->name . ", Kecamatan " . option()->kecamatan->name);
+        // $worksheet->getCell('C4')->setValue(": " . $jenis);
+        $worksheet->getCell('C5')->setValue(": " . $tahun);
+        
+        // die(json_encode($surat));
+        if (sizeof($surat) > 0) {
+            $baris  = 8;
+            $no     = 1;
+            foreach ($surat as $item) {
+                $worksheet->getCell('A' . $baris)->setValue($no);
+                $worksheet->getCell('B' . $baris)->setValue($item->nomer);
+                $worksheet->getCell('C' . $baris)->setValue(date_indo($item->tanggal));
+                $worksheet->getCell('D' . $baris)->setValue(ucwords(strtolower($item->perihal)));
+                $worksheet->getCell('E' . $baris)->setValue(date_indo(date("Y-m-d", strtotime($item->created_at))));
+                $baris++;
+                $no++;
+            }        
+        } else {
+            $worksheet->mergeCells('A8:E8');
+            $worksheet->getCell('A8')->setValue('Data Tidak Ditemukan!');            
+        }
+
+        $worksheet->getStyle('A8:E' . $worksheet->getHighestRow())->applyFromArray($styleBorder);
+
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = "BUKU_AGENDA_SURAT_MASUK_TH_" . $tahun . "_EXPORTED_" . date("d_m_Y_H_i_s");
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');

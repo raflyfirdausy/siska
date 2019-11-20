@@ -30,7 +30,8 @@
                   <span class="input-group-addon" id="addon"><i class="fa fa-search"></i></span>
                   <input name="q" type="text" class="form-control" placeholder="Cari ..." aria-describedby="addon">
                 </div>
-              </div>              
+              </div>                            
+              @if ($type == "keluar")
               <div class="col-md-4" style="padding-right:0;">
                 <select name="jenis" class="form-control" title="Pilih Jenis Surat">
                     <option></option>                    
@@ -40,6 +41,7 @@
                     @endforeach
                 </select>
               </div>
+              @endif
               <div class="col-md-3" style="padding-right:0;">
                 <select name="tahun" class="form-control" title="Tahun">
                     <option></option>
@@ -59,7 +61,7 @@
           <div class="col-md-5">
             <div class="pull-right">
               <button id="btnAddSuratKeluar" class="btn btn-success show-button" data-toggle="modal" data-target="#modal-tambah-edit"><i class="fa fa-plus"></i> Tambah</button>              
-              <a href="{{ url("/download-surat-keluar?") }}q={{$ket['q']}}&jenis={{$ket['jenis']}}&tahun={{$ket['tahun']}}" class="btn btn-danger"><i class="fa fa-download"></i> Export</a>                   
+              <a href="{{ url("/download-surat-$type?") }}q={{$ket['q']}}&jenis={{$ket['jenis']}}&tahun={{$ket['tahun']}}" class="btn btn-danger"><i class="fa fa-download"></i> Export</a>                   
             </div>
           </div>
         </div>
@@ -68,10 +70,12 @@
               <tr>
                   <th>No</th>                                    
                   <th>Nomor Surat </th>
-                  <th>Pengirim</th>
+                  @if ($type == "masuk")
+                    <th>Pengirim</th>
+                  @endif                  
                   <th>Perihal</th>
                   <th>Tanggal Surat</th>
-                  <th>{{ $type == "Keluar" ? "Di Buat" : "Di Terima" }}</th>
+                  <th>{{ $type == "keluar" ? "Di Buat" : "Di Terima" }}</th>
                   <th colspan="2" class="text-center">Aksi</th>
               </tr>
           </thead>
@@ -79,8 +83,10 @@
             @foreach ($surat as $s)
             <tr>
               <td>{{ $loop->iteration + ($surat->currentPage() * $surat->perPage()) - $surat->perPage() }}</td>          
-              <td>{{ $s->nomer }}</td>         
-              <td>{{ $s->dari }}</td>
+              <td>{{ $s->nomer }}</td>  
+              @if ($type == "masuk")
+                <td>{{ $s->dari }}</td>
+              @endif                         
               <td>{{ $s->perihal }}</td>
               <td>{{ $s->tanggal}}</td>
               <td>{{ $s->created_at }}</td>              
@@ -129,6 +135,16 @@
                 </div>
               </div>
             </div>
+            @if ($type == "masuk")
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label class="form-label">Pengirim</label>
+                      <input required type="text" id="pengirim" name="pengirim" class="form-control">                                  
+                  </div>
+                </div>
+              </div>
+            @endif            
             <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
@@ -137,19 +153,21 @@
                   </div>
               </div>            
             </div>
-            <div class="row">
-              <div class="col-md-12">                  
-                <div class="form-group">                   
-                  <label class="form-label">Jenis Surat</label>   
-                  <select required name="jenis_surat" id="jenis_surat" class="form-control" title="Pilih Jenis Surat">                  
-                    <option></option>                                          
-                    @foreach($jenis as $j)
-                      <option value="{{ $j->type }}">{{ ucwords(strtolower($j->type)) }}</option>
-                    @endforeach                    
-                  </select>
-                </div>                  
+            @if ($type == "keluar")
+              <div class="row">
+                <div class="col-md-12">                  
+                  <div class="form-group">                   
+                    <label class="form-label">Jenis Surat</label>   
+                    <select required name="jenis_surat" id="jenis_surat" class="form-control" title="Pilih Jenis Surat">                  
+                      <option></option>                                          
+                      @foreach($jenis as $j)
+                        <option value="{{ $j->type }}">{{ ucwords(strtolower($j->type)) }}</option>
+                      @endforeach                    
+                    </select>
+                  </div>                  
+                </div>
               </div>
-            </div>
+            @endif            
             <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
@@ -189,45 +207,17 @@
       </div>
     </div>
   </div>
-
-  <div class="modal fade" id="modal-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Keterangan</h4>
-        </div>
-        <div class="modal-body">
-          <ul>
-            <li><h4>Tanggal Surat :<h4> </li>
-            <li id="date">-</li>
-            <li><h4>Nomor Surat :<h4> </li>
-            <li id="number">-</li>
-            <li><h4>{{ $type == 'masuk' ? 'Pengirim' : 'Tujuan' }} :</h4></li>
-            <li id="target">-</li>
-            <li><h4>Isi Singkat :<h4> </li>
-            <li id="summary">-</li>
-            <li><h4>Keterangan :<h4> </li>
-            <li id="note">-</li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
 
     $("#btnAddSuratKeluar").click(function(){
       $('form').trigger("reset");
       $("#no_surat").attr("onkeyup", "cekKodeSurat(this);");
-      $("#form_tambah_edit").attr("action", '{{ URL::to("/tambah-surat-keluar") }}');
+      $("#NomerWarning").text("");
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/tambah-surat-$type") }}');
     });
 
     $('.editData').on('click', function() {
-      $("#form_tambah_edit").attr("action", '{{ URL::to("/edit-surat-keluar") }}');
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/edit-surat-$type") }}');
       $("#NomerWarning").text("");
 
       let surat = $(this).data('surat');          
@@ -237,22 +227,25 @@
       $('#tanggal_surat').val(surat.tanggal);    
       $('#jenis_surat').val(surat.type);      
       $('#perihal').val(surat.perihal);      
+      $('#pengirim').val(surat.dari);    
     });    
 
     $('.hapusData').on('click', function() {
       var id = $(this).data('id');      
       $("#hapus_id").attr("value", id);
-      $('#form-delete').attr('action', '{{ URL::to("/hapus-surat-keluar") }}');
+      $('#form-delete').attr('action', '{{ URL::to("/hapus-surat-$type") }}');
     });    
 
-    function cekKodeSurat(input, nomerSurat = null){      
-      let kode_surat = input.value.replace(/\s/g,"");
-      let nomerSurat_ = nomerSurat.replace(/\s/g,"");
+    function cekKodeSurat(input, nomerSurat = null){         
+      let kode_surat = input.value.replace(/\s/g,"");        
 
       var CekAjak = true;
-      if(kode_surat == nomerSurat_){
-        $("#NomerWarning").text("");
-        CekAjak = false;        
+      if(nomerSurat != null){
+        let nomerSurat_ = nomerSurat.replace(/\s/g,"");
+        if(kode_surat == nomerSurat_){
+          $("#NomerWarning").text("");
+          CekAjak = false;        
+        }
       }
       
       if(CekAjak){

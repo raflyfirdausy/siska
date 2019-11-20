@@ -78,6 +78,8 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     
     Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
     Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
+
+
     Route::get('/cek-no-surat-lengkap', 'SuratController@cekKodeSuratLengkap');
 
     Route::get('/surat-keluar', 'SuratController@getSuratKeluar');
@@ -86,6 +88,11 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/hapus-surat-keluar', 'SuratController@hapusSuratKeluar');
     Route::get('/download-surat-keluar', 'SuratController@downloadSuratKeluar');
 
+    Route::get('/surat-masuk', 'SuratController@getSuratMasuk');
+    Route::post('/tambah-surat-masuk', 'SuratController@addSuratMasukManual');
+    Route::post('/edit-surat-masuk', 'SuratController@editSuratMasuk');
+    Route::post('/hapus-surat-masuk', 'SuratController@hapusSuratMasuk');
+    Route::get('/download-surat-masuk', 'SuratController@downloadSuratMasuk');
     //END=================================================================
 
 
@@ -214,7 +221,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
 });
 
 Route::middleware(['auth', 'access:surat'])->group(function() {
-    Route::get('/surat-masuk', 'Secretariat\InboxController@index');
+    // Route::get('/surat-masuk', 'Secretariat\InboxController@index');
     Route::get('/surat-masuk/tambah', 'Secretariat\InboxController@create');
     Route::post('/surat-masuk/tambah', 'Secretariat\InboxController@store');
     Route::get('/surat-masuk/{id}/ubah', 'Secretariat\InboxController@edit');

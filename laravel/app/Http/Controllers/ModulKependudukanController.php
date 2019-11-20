@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
+use function GuzzleHttp\Client;
 
 class ModulKependudukanController extends Controller
 {
@@ -56,34 +57,53 @@ class ModulKependudukanController extends Controller
     public function getLink($nik)
     {
         $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
+        // $link   = "http://103.110.4.34:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
+        // $link   = "https://durenmas.banjarnegarakab.go.id/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
 
         return $link;
-
-        // if ($nik == "3304061303090001" || $nik == "3304062007780002" || $nik == "3304064308830001") {
-        //     $linkRequest = asset("json/$nik.json");
-        //     return $linkRequest;
-        // } else {
-        //     // $linkRequest = asset("json/tidak_ditemukan.json");
-        //     return redirect('/modul-kependudukan');
-        // }
     }
 
-    public function cekNoSurat(Request $requset){
-        return response()->json([
-            'count' => Surat::where("nomer", $requset->no)->count(),            
-        ]);        
+    public function getContent($url)
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request(
+            "GET",
+            $url
+        );
+        return ($response->getBody());
+        // die();
+
+
+        // $ch = curl_init();        
+        // curl_setopt($ch, CURLOPT_URL, $url);              
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);   
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     
+        // $result = curl_exec($ch);    
+        // curl_close($ch);
+
+        // echo $result;
+        // die();
     }
 
-    public function cekNoSurat_($noSurat){
+    public function cekNoSurat(Request $requset)
+    {
         return response()->json([
-            'count' => Surat::where("nomer", $noSurat)->count(),            
-        ]); 
+            'count' => Surat::where("nomer", $requset->no)->count(),
+        ]);
     }
 
-    public function cekNoSuratTerakhir(Request $requset){
+    public function cekNoSurat_($noSurat)
+    {
         return response()->json([
-            'result' => Surat::where("nomer", "LIKE",  "$requset->kode%")->latest('id')->first(),            
-        ]);        
+            'count' => Surat::where("nomer", $noSurat)->count(),
+        ]);
+    }
+
+    public function cekNoSuratTerakhir(Request $requset)
+    {
+        return response()->json([
+            'result' => Surat::where("nomer", "LIKE",  "$requset->kode%")->latest('id')->first(),
+        ]);
     }
 
     public function modulKependudukanDetail($nik)
@@ -98,6 +118,7 @@ class ModulKependudukanController extends Controller
         $linkRequest = asset("json/tidak_ditemukan.json");
         if ($request->has('nik')) {
             $nik = $request->input('nik');
+            $this->getContent($this->getLink($nik));
             $data = json_decode(file_get_contents($this->getLink($nik)));
 
             if (!isset($data->content->RESPON)) {
@@ -151,7 +172,7 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_permohonan_pendataan_ulang.rtf';
-        
+
         $filename = 'SURAT_PERMOHONAN_PENDATAAN_ULANG_' . preg_replace("/[^A-Za-z0-9]/", "_", strtoupper($request->nama_lengkap)) . '_' . $date . '.doc';
 
         return TemplateReplacer::replace($file, $replace, $filename);
@@ -193,19 +214,19 @@ class ModulKependudukanController extends Controller
         $file = 'surat_keterangan_tanah.rtf';
         $filename = 'SURAT_KETERANGAN_TANAH_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN TANAH " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN TANAH",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN TANAH " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN TANAH",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
-            return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
+            return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');
         }
     }
 
@@ -254,17 +275,17 @@ class ModulKependudukanController extends Controller
         $file = 'surat_keterangan_usaha.rtf';
         $filename = 'SURAT_KETERANGAN_USAHA_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN USAHA " . strtoupper($request->jenis_usaha) . "_" . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN USAHA",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN USAHA " . strtoupper($request->jenis_usaha) . "_" . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN USAHA",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
@@ -317,17 +338,17 @@ class ModulKependudukanController extends Controller
         $file = 'surat_keterangan_kematian.rtf';
         $filename = 'SURAT_KETERANGAN_KEMATIAN_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN KEMATIAN " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN KEMATIAN",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN KEMATIAN " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN KEMATIAN",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
@@ -384,17 +405,17 @@ class ModulKependudukanController extends Controller
         $file = 'surat_keterangan_domisili_lembaga.rtf';
         $filename = 'SURAT_KETERANGAN_DOMISILI_LEMBAGA_' . $request->nama_lembaga . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN DOMISILI LEMBAGA " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN DOMISILI LEMBAGA",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN DOMISILI LEMBAGA " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN DOMISILI LEMBAGA",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
@@ -445,20 +466,20 @@ class ModulKependudukanController extends Controller
         ];
 
         $date = date('d_M_Y_H_i_s', time());
-        $file = 'surat_keterangan_domisili.rtf';        
+        $file = 'surat_keterangan_domisili.rtf';
         $filename = 'SURAT_KETERANGAN_DOMISILI_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN DOMISILI " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN DOMISILI",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN DOMISILI " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN DOMISILI",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
@@ -515,20 +536,20 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_keterangan_beda_nama_identitas.rtf';
-        
+
         $filename = 'SURAT_KETERANGAN_BEDA_NAMA_IDENTITAS_' . preg_replace("/[^A-Za-z0-9]/", "_", $request->benar_nama) . '_' . $date . '.doc';
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN BEDA IDENTITAS " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN BEDA IDENTITAS",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN BEDA IDENTITAS " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN BEDA IDENTITAS",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
@@ -577,32 +598,32 @@ class ModulKependudukanController extends Controller
 
         $date = date('d_M_Y_H_i_s', time());
         $file = 'surat_pengantar.rtf';
-        
+
         $filename = 'SURAT_PENGANTAR_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
 
         $kodeStatus = null;
-        if($request->kode_keperluan == "2"){
+        if ($request->kode_keperluan == "2") {
             $kodeStatus = "SURAT PENGANTAR KTP";
-        } else if ($request->kode_keperluan == "3"){
+        } else if ($request->kode_keperluan == "3") {
             $kodeStatus = "SURAT PENGANTAR SKCK";
         } else {
             $kodeStatus = "SURAT PENGANTAR UMUM";
         }
 
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => $kodeStatus . " " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => $kodeStatus,
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => $kodeStatus . " " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => $kodeStatus,
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
-        }  
+        }
     }
 
     public function print_keterangan_tidak_mampu(Request $request, $nik)
@@ -650,24 +671,24 @@ class ModulKependudukanController extends Controller
         $file = 'surat_keterangan_tidak_mampu.rtf';
 
         $filename = 'SURAT_KETERANGAN_TIDAK_MAMPU_' . preg_replace("/[^A-Za-z0-9]/", "_", $data->content[0]->NAMA_LGKP) . '_' . $date . '.doc';
-                
-        if(json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0){
+
+        if (json_decode($this->cekNoSurat_($noSurat)->getContent())->count == 0) {
             Surat::create([
-            "nomer"     => $noSurat,
-            "tanggal"   => date("Y-m-d"),
-            "perihal"   => "SURAT KETERANGAN TIDAK MAMPU " . $data->content[0]->NAMA_LGKP,
-            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
-            "type"      => "SURAT KETERANGAN TIDAK MAMPU",
-            "jenis"     => "keluar",
-            "nik"       => $nik
-        ]);
-            return TemplateReplacer::replace($file, $replace, $filename);    
+                "nomer"     => $noSurat,
+                "tanggal"   => date("Y-m-d"),
+                "perihal"   => "SURAT KETERANGAN TIDAK MAMPU " . $data->content[0]->NAMA_LGKP,
+                "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+                "type"      => "SURAT KETERANGAN TIDAK MAMPU",
+                "jenis"     => "keluar",
+                "nik"       => $nik
+            ]);
+            return TemplateReplacer::replace($file, $replace, $filename);
         } else {
             return redirect('/modul-kependudukan/detail/' . $nik)->with('success', 'Gagal membuat surat, Nomor surat tidak boleh sama dengan nomor surat sebelumnya');;
         }
     }
 
-    
+
     public function statistikKependudukan()
     {
 

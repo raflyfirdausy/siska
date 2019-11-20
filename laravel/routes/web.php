@@ -81,6 +81,9 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::get('/cek-no-surat-lengkap', 'SuratController@cekKodeSuratLengkap');
 
     Route::get('/surat-keluar', 'SuratController@getSuratKeluar');
+    Route::post('/tambah-surat-keluar', 'SuratController@addSuratKeluarManual');
+    Route::post('/edit-surat-keluar', 'SuratController@editSuratKeluar');
+    Route::post('/hapus-surat-keluar', 'SuratController@hapusSuratKeluar');
     Route::get('/download-surat-keluar', 'SuratController@downloadSuratKeluar');
 
     //END=================================================================

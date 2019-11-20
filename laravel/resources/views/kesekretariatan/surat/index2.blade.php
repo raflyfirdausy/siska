@@ -71,8 +71,8 @@
                   <th>Pengirim</th>
                   <th>Perihal</th>
                   <th>Tanggal Surat</th>
-                  <th>{{ $type == "keluar" ? "Di Buat" : "Di Terima" }}</th>
-                  <th colspan="3" class="text-center">Aksi</th>
+                  <th>{{ $type == "Keluar" ? "Di Buat" : "Di Terima" }}</th>
+                  <th colspan="2" class="text-center">Aksi</th>
               </tr>
           </thead>
           <tbody>
@@ -84,14 +84,15 @@
               <td>{{ $s->perihal }}</td>
               <td>{{ $s->tanggal}}</td>
               <td>{{ $s->created_at }}</td>              
-              <td>
+              {{-- <td>
                 <button class="btn btn-info show-button" data-toggle="modal" data-target="#modal-show" data-mail='@json($s)'>Lihat</button>
+              </td> --}}
+              <td>
+                  <button class="btn btn-warning show-button editData" data-toggle="modal" data-target="#modal-tambah-edit" data-surat='@json($s)'>Ubah</button>
+                  {{-- <a href="{{ url("surat-{$type}/{$s->id}/ubah") }}" class="btn btn-warning" style="margin-bottom:0px;">Ubah</a> --}}
               </td>
               <td>
-                <a href="{{ url("surat-{$type}/{$s->id}/ubah") }}" class="btn btn-warning" style="margin-bottom:0px;">Ubah</a>
-              </td>
-              <td>
-                <button type="button" class="btn btn-danger delete-button" data-id="{{ $s->id }}" data-toggle="modal" data-target="#modal-confirm">Hapus</button>
+                <button type="button" class="btn btn-danger hapusData" data-id="{{ $s->id }}" data-toggle="modal" data-target="#modal-confirm">Hapus</button>
               </td>
             </tr>
             @endforeach
@@ -116,13 +117,15 @@
         <h4 class="modal-title" id="modalTambahEdit">Tambah Manual Surat Keluar</h4>
       </div>
       <form id="form_tambah_edit" enctype="multipart/form-data" role="form" method="POST">
+        @csrf
         <div class="modal-body">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                     <label class="form-label">No Surat</label>
                     <input required type="text" id="no_surat" name="no_surat" class="form-control">
-                    <small id="NomerWarning" style="color:red;"></small>                     
+                    <small id="NomerWarning" style="color:red;"></small>     
+                    <input type="hidden" name="id_surat" id="id_surat">                
                 </div>
               </div>
             </div>
@@ -138,12 +141,11 @@
               <div class="col-md-12">                  
                 <div class="form-group">                   
                   <label class="form-label">Jenis Surat</label>   
-                  <select required name="jenis" class="form-control" title="Pilih Jenis Surat">                  
+                  <select required name="jenis_surat" id="jenis_surat" class="form-control" title="Pilih Jenis Surat">                  
                     <option></option>                                          
                     @foreach($jenis as $j)
                       <option value="{{ $j->type }}">{{ ucwords(strtolower($j->type)) }}</option>
-                    @endforeach
-                    <option value="Surat Lain">Surat Lain</option>
+                    @endforeach                    
                   </select>
                 </div>                  
               </div>
@@ -165,23 +167,6 @@
     </div>
   </div>
 </div>
-
-  <div class="modal fade" id="modal-show-photo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Foto</h4>
-        </div>
-        <div class="modal-body">
-          <img id="mail-photo" src="-" class="img-responsive">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-        </div>
-      </div>
-    </div>
-  </div>
   
   <div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -195,8 +180,9 @@
         </div>
         <div class="modal-footer">
           <form action="#" method="POST" id="form-delete">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
             @csrf
+            <input type="hidden" name="hapus_id" id="hapus_id">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
             <button type="submit" class="btn btn-danger" id="delete-confirm">Hapus</button>
           </form>
         </div>
@@ -235,44 +221,57 @@
   <script>
 
     $("#btnAddSuratKeluar").click(function(){
-      $("#no_surat").attr("onkeyup", "cekKodeSurat(this, false);");
+      $('form').trigger("reset");
+      $("#no_surat").attr("onkeyup", "cekKodeSurat(this);");
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/tambah-surat-keluar") }}');
     });
 
-    function cekKodeSurat(input, isModeEdit = false){
-      let kode_surat = input.value.replace(/\s/g,"");
-      $.ajax({
-          type: 'GET',
-          url: '{{ URL::to("/cek-no-surat-lengkap?no_surat=") }}' + kode_surat,
-          dataType: 'json',
-          success: function(x){
-            if(x.count > 0 || input.value.length < 1){
-              $("#NomerWarning").text("Nomer surat sudah terdaftar pada database");
-              $('#btnSimpan').prop('disabled', true);
-            } else {      
-              $("#NomerWarning").text("");
-              $('#btnSimpan').prop('disabled', false);
-            }
-          }
-      });    
-    }
+    $('.editData').on('click', function() {
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/edit-surat-keluar") }}');
+      $("#NomerWarning").text("");
 
-    function cekKodeSurats(input, isModeEdit = false){
-      let kodeSurat = kode + " / " + input.value + " / Ds. {{ ucfirst(strtolower(option()->desa->name)) }} / {{ date('Y') }}";      
-      $.ajax({
-          type: 'GET',
-          url: '{{ URL::to("/cek-no-surat?no=") }}' + kodeSurat,
-          dataType: 'json',
-          success: function(x){
-            if(x.count > 0 || input.value.length < 1){
-              // $('button[type="submit"]').prop('disabled', true);
-              $("#NomerWarning").text("Nomer surat sudah terdaftar pada database");
-            } else {              
-              // $('button[type="submit"]').prop('disabled', false);
-              $("#NomerWarning").text("");
+      let surat = $(this).data('surat');          
+      $("#id_surat").attr("value", surat.id);
+      $("#no_surat").attr("onkeyup", "cekKodeSurat(this, '" + surat.nomer + "');");
+      $('#no_surat').val(surat.nomer);
+      $('#tanggal_surat').val(surat.tanggal);    
+      $('#jenis_surat').val(surat.type);      
+      $('#perihal').val(surat.perihal);      
+    });    
+
+    $('.hapusData').on('click', function() {
+      var id = $(this).data('id');      
+      $("#hapus_id").attr("value", id);
+      $('#form-delete').attr('action', '{{ URL::to("/hapus-surat-keluar") }}');
+    });    
+
+    function cekKodeSurat(input, nomerSurat = null){      
+      let kode_surat = input.value.replace(/\s/g,"");
+      let nomerSurat_ = nomerSurat.replace(/\s/g,"");
+
+      var CekAjak = true;
+      if(kode_surat == nomerSurat_){
+        $("#NomerWarning").text("");
+        CekAjak = false;        
+      }
+      
+      if(CekAjak){
+        $.ajax({
+            type: 'GET',
+            url: '{{ URL::to("/cek-no-surat-lengkap?no_surat=") }}' + kode_surat,
+            dataType: 'json',
+            success: function(x){
+              if(x.count > 0 || input.value.length < 1){
+                $("#NomerWarning").text("Nomer surat sudah terdaftar pada database");
+                $('#btnSimpan').prop('disabled', true);
+              } else {      
+                $("#NomerWarning").text("");
+                $('#btnSimpan').prop('disabled', false);
+              }
             }
-          }
-      });
-    }
+        });  
+      }      
+    }       
 
     function delay(callback, ms) {
         var timer = 0;
@@ -283,14 +282,7 @@
             callback.apply(context, args);
             }, ms || 0);
         };
-    }
-
-    $('.delete-button').on('click', function() {
-      var id = $(this).data('id');
-      var link =  '/surat-{{$type}}/' + id + '/hapus';
-
-      $('#form-delete').attr('action', link);
-    });
+    }    
 
     $('.show-photo-button').on('click', function() {
       var url = $(this).data('url');
@@ -302,13 +294,6 @@
       $('#modal-confirm').modal('hide');
     });
 
-    $('.show-button').on('click', function() {
-      var mail = $(this).data('mail');
-      $('#date').text(mail.date);
-      $('#number').text(mail.number);
-      $('#target').text(mail.target);
-      $('#summary').text(mail.summary);
-      $('#note').text(mail.note);
-    });
+    
   </script>
 @endsection

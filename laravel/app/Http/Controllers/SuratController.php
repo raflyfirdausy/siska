@@ -75,6 +75,38 @@ class SuratController extends Controller
         return view('kesekretariatan.surat.index2', compact('surat', 'jenis', 'tahun', 'type', 'ket'));
     }
 
+    public function addSuratKeluarManual(Request $request)
+    {
+        Surat::create([
+            "nomer"     => $request->input('no_surat'),
+            "tanggal"   => $request->input('tanggal_surat'),
+            "type"      => $request->input('jenis_surat'),
+            "dari"      => "Ds. " . ucfirst(strtolower(option()->desa->name)),
+            "perihal"   => $request->input('perihal'),
+            "jenis"     => "keluar",
+            "nik"       => NULL
+        ]);
+        return redirect('/surat-keluar')->with('success', 'Penambahan surat keluar baru berhasil dilakukan!');
+    }
+
+    public function editSuratKeluar (Request $request)
+    {
+        $surat = Surat::where('id', $request->input("id_surat"))->firstOrFail();
+        $surat->update([
+            "nomer"     => $request->input('no_surat'),
+            "tanggal"   => $request->input('tanggal_surat'),
+            "type"      => $request->input('jenis_surat'),            
+            "perihal"   => $request->input('perihal')
+        ]);
+        return redirect('/surat-keluar')->with('success', 'Edit surat keluar berhasil dilakukan!');
+    }
+
+    public function hapusSuratKeluar(Request $request){
+        $surat = Surat::where('id', $request->input("hapus_id"))->firstOrFail();
+        $surat->delete();
+        return redirect('/surat-keluar')->with('success', 'Hapus surat keluar berhasil dilakukan!');
+    }
+
     public function downloadSuratKeluar(Request $request)
     {
         $surat  = $this->getDataSuratKeluar($request, "ASC")->get();

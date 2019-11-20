@@ -33,8 +33,7 @@
         <table id="posts-table" class="table table-tools table-striped">
           <thead>
             <tr>
-              <th>#</th>
-              <th>&ThickSpace;</th>
+              <th>#</th>              
               <th>NIP</th>
               <th>Nama</th>
               <th>Jabatan</th>
@@ -44,8 +43,7 @@
           <tbody>
             @foreach ($officials as $o)
             <tr>
-              <td>{{ $loop->iteration }}</td>
-              <td style="width:10%"><img style="width: 100%;" src="{{ $o->foto }}" class="img-thumbnail"></td>
+              <td>{{ $loop->iteration }}</td>              
               <td>{{ $o->nip }}</td>
               <td>{{ $o->name }}</td>
               <td>{{ $o->jabatan }}</td>
@@ -101,12 +99,12 @@
               <div class="col-md-12">
                 <label>Silahkan isi keterangan perangkat desa disini</label>
                 <div class="form-horizontal">
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                     <label class="col-md-12 form-label">Foto <span class="asterisk">*</span></label>
                     <div class="col-md-12">
                       <input type="file" class="form-control" name="photo" required autocomplete="false">
                     </div>
-                  </div>
+                  </div> --}}
                   <div class="form-group">
                     <label class="col-md-12 form-label">NIP <span class="asterisk">*</span></label>
                     <div class="col-md-12">
@@ -126,11 +124,12 @@
                         <option></option>
                         <option value="kepala_desa">Kepala Desa</option>
                         <option value="sekretaris_desa">Sekretaris Desa</option>
-                        <option value="kaur_umum">Kaur Umum</option>
-                        <option value="kaur_pemerintahan">Kaur Pemerintahan</option>
+                        <option value="kaur_TU_dan_umum">Kaur TU dan Umum</option>
                         <option value="kaur_keuangan">Kaur Keuangan</option>
-                        <option value="kaur_pembangunan">Kaur Pembangunan</option>
-                        <option value="kaur_keamanan_dan_ketertiban">Kaur Keamanan dan Ketertiban</option>
+                        <option value="kaur_perencanaan">Kaur Perencanaan</option>
+                        <option value="kaur_pemerintahan">Kaur Pemerintahan</option>
+                        <option value="kaur_pelayanan">Kaur Pelayanan</option>
+                        <option value="kasi_kesejahteraan">Kasi Kesejahteraan</option>
                       </select>
                     </div>
                   </div>
@@ -153,19 +152,19 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Ubah Data Kelas Tanah <span id="code-title">-</span></h4>
+            <h4 class="modal-title" id="myModalLabel">Ubah Data Perangkat Desa</h4>
           </div>
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12">
                 <label>Silahkan ubah keterangan perangkat disini</label>
                 <div class="form-horizontal">
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                     <label class="col-md-12 form-label">Foto</label>
                     <div class="col-md-12">
                       <input type="file" class="form-control" name="photo" autocomplete="false">
                     </div>
-                  </div>
+                  </div> --}}
                   <div class="form-group">
                     <label class="col-md-12 form-label">NIP</label>
                     <div class="col-md-12">
@@ -185,11 +184,12 @@
                         <option></option>
                         <option value="kepala_desa">Kepala Desa</option>
                         <option value="sekretaris_desa">Sekretaris Desa</option>
-                        <option value="kaur_umum">Kaur Umum</option>
-                        <option value="kaur_pemerintahan">Kaur Pemerintahan</option>
+                        <option value="kaur_TU_dan_umum">Kaur TU dan Umum</option>
                         <option value="kaur_keuangan">Kaur Keuangan</option>
-                        <option value="kaur_pembangunan">Kaur Pembangunan</option>
-                        <option value="kaur_keamanan_dan_ketertiban">Kaur Keamanan dan Ketertiban</option>
+                        <option value="kaur_perencanaan">Kaur Perencanaan</option>
+                        <option value="kaur_pemerintahan">Kaur Pemerintahan</option>
+                        <option value="kaur_pelayanan">Kaur Pelayanan</option>
+                        <option value="kasi_kesejahteraan">Kasi Kesejahteraan</option>
                       </select>
                     </div>
                   </div>
@@ -206,10 +206,9 @@
     </div>
   </div>
   <script>
-    $('.delete-button').on('click', function() {
+    $('.delete-button').on('click', function() {      
       var official = $(this).data('official');
-      var link =  '/perangkat-desa/' + official.id + '/hapus';
-
+      var link =  '{{ url("perangkat-desa") }}/' + official.id + '/hapus';      
       $('#form-delete').attr('action', link);
     });
 
@@ -223,7 +222,7 @@
       $('#edit-form').attr('action', url);
       $('#nip').val(data.nip);
       $('#name').val(data.name);
-      $('#position').val(data.nip);
+      $('#position').val(data.position);
       console.log($(`#position[value=${data.position}]`));
       $('span.filter-option.pull-left').text($(this).data('position'));
       $(`#position`).val(data.position)

@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/dashboard');
     });
     Route::get('/dashboard', 'HomeController@index');
+    Route::get('/dashboard/download-statistik', 'HomeController@downloadStatistik');
     Route::get('/logout', 'HomeController@logout');
 });
 

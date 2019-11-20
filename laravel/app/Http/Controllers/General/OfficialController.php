@@ -18,19 +18,19 @@ class OfficialController extends Controller
 
     public function store(Request $request)
     {
-        die($request->photo->hashName());
+        // die($request->photo->hashName());
         $request->validate([
-            'nip' => 'required',
-            'name' => 'required',
-            'photo' => 'nullable',
-            'position' => 'required|in:kepala_desa,sekretaris_desa,kaur_pemerintahan,kaur_umum,kaur_keuangan,kaur_pembangunan,kaur_keamanan_dan_ketertiban',
+            'nip'       => 'required',
+            'name'      => 'required',
+            'photo'     => 'nullable',
+            'position'  => 'required|in:kepala_desa,sekretaris_desa,kaur_TU_dan_umum,kaur_keuangan,kaur_perencanaan,kaur_pemerintahan,kaur_pelayanan,kasi_kesejahteraan',
         ]);
 
-        $photoName = $request->photo->hashName();
+        // $photoName = $request->photo->hashName();
         
-        $url = $request->photo->storeAs('uploaded/images', $photoName, 'public');
+        // $url = $request->photo->storeAs('uploaded/images', $photoName, 'public');
         $official = new Official($request->except('photo'));
-        $official->photo = $url;
+        // $official->photo = $url;
         $official->save();
         return redirect('perangkat-desa')->with('success', 'Penambahan perangkat desa berhasil dilakukan!');
     }
@@ -41,7 +41,7 @@ class OfficialController extends Controller
             'nip' => 'required',
             'name' => 'required',
             'photo' => 'nullable',
-            'position' => 'required|in:kepala_desa,sekretaris_desa,kaur_pemerintahan,kaur_umum,kaur_keuangan,kaur_pembangunan,kaur_keamanan_dan_ketertiban',
+            'position'  => 'required|in:kepala_desa,sekretaris_desa,kaur_TU_dan_umum,kaur_keuangan,kaur_perencanaan,kaur_pemerintahan,kaur_pelayanan,kasi_kesejahteraan',
         ]);
 
         $official = Official::findOrFail($id);

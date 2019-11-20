@@ -3,12 +3,13 @@
     <div id="main-menu">
         <ul class="sidebar-nav">
             <li>
-                <a href="{{ url('dashboard') }}"><i class="fa fa-home"></i><span class="sidebar-text">Profile Desa</span></a>
+                <a href="{{ url('dashboard') }}"><i class="fa fa-home"></i><span class="sidebar-text">Dashboard</span></a>
             </li>
             <li>
                 <a href="{{ url('modul-kependudukan') }}"><i class="fa fa-desktop"></i><span class="sidebar-text">Modul Penduduk</span></a>
             </li>
-            @if (Auth::user()->canAccess('kependudukan'))
+
+            {{-- @if (Auth::user()->canAccess('kependudukan'))
             <li>
                 <a href="#"><i class="fa fa-group"></i><span class="sidebar-text">Kependudukan</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">
@@ -63,7 +64,9 @@
                     </li>
                 </ul>
             </li>
-            @endif
+            @endif --}}
+
+
             @if (Auth::user()->canAccess('surat'))
             <li>
                 <a href="#"><i class="fa fa-envelope"></i><span class="sidebar-text">Kesekretariatan</span><span class="fa arrow"></span></a>
@@ -76,7 +79,8 @@
                     </li>
                 </ul>
             </li>
-            <li>
+
+            {{-- <li>
                 <a href="#"><i class="fa fa-inbox"></i><span class="sidebar-text">Pelayanan Masyarakat</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">
                     <li>
@@ -86,9 +90,11 @@
                         <a href="{{ url("pendaftaran") }}"><span class="sidebar-text">Pendaftaran Masyarakat</span></a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
+
             @endif
-            @if (Auth::user()->canAccess('pertanahan'))
+
+            {{-- @if (Auth::user()->canAccess('pertanahan'))
             <li>
                 <a href="#"><i class="fa fa-home"></i><span class="sidebar-text">Pertanahan</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">
@@ -103,7 +109,8 @@
                     </li>
                 </ul>
             </li>
-            @endif
+            @endif --}}
+
             @if (Auth::user()->canAccess('keuangan'))
             <li>
                 <a href="https://siskeudes-banjarnegarakab.simdacloud.id/" target="_blank"><i class="fa fa-money"></i><span class="sidebar-text">Siskeudes</span></a>
@@ -134,8 +141,10 @@
                 </ul> -->
             </li>
             @endif
+
             @if (Auth::user()->canAccess('pengguna'))
-            <li>
+
+            {{-- <li>
                 <a href="#"><i class="fa fa-lock"></i><span class="sidebar-text">Akses</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">
                     <li>
@@ -145,7 +154,8 @@
                         <a href="{{ url("role") }}"><span class="sidebar-text">Role</span></a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
+
             <li>
                 <a href="#"><i class="fa fa-gear"></i><span class="sidebar-text">Pengaturan Umum</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">

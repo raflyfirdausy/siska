@@ -29,20 +29,17 @@ Dashboard |
             </div>
             <div class="col-xs-9">
               <small class="stat-title">JUMLAH KEPALA KELUARGA</small>
-              <h1 class="m-0 w-500"><span class="animate-number" data-value="1014" data-animation-duration="1400">0</span></h1>
-              <!-- <h1 class="m-0 w-500"><span class="animate-number" data-value="{{ $familiesCount }}" data-animation-duration="1400">0</span></h1> -->
+              <h1 class="m-0 w-500"><span class="animate-number" data-value="1083" data-animation-duration="1500">0</span></h1>              
             </div>
           </div>
           <div class="row">
             <div class="col-xs-6">
               <small class="stat-title">Pria</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="892" data-animation-duration="1400">0</span></h3>
-              <!-- <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $malesCount }}" data-animation-duration="1400">0</span></h3> -->
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="875" data-animation-duration="1500">0</span></h3>            
             </div>
             <div class="col-xs-6">
               <small class="stat-title">Wanita</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="122" data-animation-duration="1400">0</span></h3>
-              <!-- <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $femalesCount }}" data-animation-duration="1400">0</span></h3> -->
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="208" data-animation-duration="1500">0</span></h3>              
             </div>
           </div>
         </div>
@@ -57,20 +54,17 @@ Dashboard |
             </div>
             <div class="col-xs-9">
               <small class="stat-title">JUMLAH PENDUDUK</small>
-              <h1 class="m-0 w-500"><span class="animate-number" data-value="3085" data-animation-duration="1400">0</span></h1>
-              <!-- <h1 class="m-0 w-500"><span class="animate-number" data-value="{{ $residentsCount }}" data-animation-duration="1400">0</span></h1> -->
+              <h1 class="m-0 w-500"><span class="animate-number" data-value="3318" data-animation-duration="1500">0</span></h1>             
             </div>
           </div>
           <div class="row">
             <div class="col-xs-6">
               <small class="stat-title">Pria</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="1604" data-animation-duration="1400">0</span></h3>
-              <!-- <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $malesCount }}" data-animation-duration="1400">0</span></h3> -->
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="1627" data-animation-duration="1500">0</span></h3>              
             </div>
             <div class="col-xs-6">
               <small class="stat-title">Wanita</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="1481" data-animation-duration="1400">0</span></h3>
-              <!-- <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $femalesCount }}" data-animation-duration="1400">0</span></h3> -->
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="1691" data-animation-duration="1500">0</span></h3>              
             </div>
           </div>
         </div>
@@ -102,8 +96,68 @@ Dashboard |
       </div>
     </div>
   </div>
-  <h3>Peristiwa</h3>
-  <div class="row m-t-20">
+
+  <div class="row">
+    <div class="col-md-6">      
+      <h4><b>Statistik Data Kependudukan</b></h4>
+    </div>
+    <div class="col-md-6">
+        <a href="{{ url('/dashboard/download-statistik') }}" class="btn btn-md btn-info pull-right"><i class="fa fa-download"></i> Download Statistik Lengkap</a>
+    </div>
+  </div>
+
+  <div class="row">
+     <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <h3 class="m-b-0 m-t-0"><strong>Jumlah </strong> Jiwa</h3>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <div id="chart-jumlah-jiwa"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <h3 class="m-b-0 m-t-0"><strong>Jumlah </strong> Kepala Keluarga</h3>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <div id="chart-kepala-keluarga"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <h3 class="m-b-0 m-t-0"><strong>Jumlah </strong> Kepemilikan Kartu Keluarga</h3>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <div id="chart-kepemilikan-kartu-keluarga"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  {{-- <div class="row m-t-20">
     <div class="col-md-4 col-sm-12">
       <div class="panel no-bd bd-3 panel-stat">
         <a href="{{ action('Residency\BirthController@create') }}">
@@ -191,12 +245,44 @@ Dashboard |
         </a>
       </div>
     </div>
-  </div>
+  </div> --}}
 </div>
 @endsection
 
 {{-- Untuk menambahkan js script / file dan modal --}}
 @section('page-footers')
+
+<script>
+  $(document).ready(function() {
+        new Morris.Donut({
+            element: 'chart-jumlah-jiwa',
+            data: @json($jumlahJiwa),
+            colors: ["#2c3e50", "#e74c3c"],
+            formatter: function(x) {
+                return x;
+            }
+        });
+
+        new Morris.Donut({
+            element: 'chart-kepala-keluarga',
+            data: @json($jumlahKepalaKeluarga),
+            colors: ['#3498db', '#2c3e50'],
+            formatter: function(x) {
+                return x;
+            }
+        });
+
+        new Morris.Donut({
+            element: 'chart-kepemilikan-kartu-keluarga',
+            data: @json($jumlahKepemilikanKartuKeluarga),
+            colors: ['#e67e22', '#2c3e50'],
+            formatter: function(x) {
+                return x;
+            }
+        });
+
+    });
+</script>
 <script src="{{asset('plugins/metrojs/metrojs.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/moment.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/fullcalendar.min.js')}}"></script>

@@ -13,49 +13,71 @@ use App\Models\Residency\Death;
 use App\Models\Residency\Transfer;
 use App\Models\Residency\Newcomer;
 use App\Models\Residency\LaborMigration;
+use App\Models\Surat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class HomeController extends Controller
 {
     public function index() {
-        $familiesCount = Family::all()->count();
-        $residentsCount = Resident::canBeDisplayed()->get()->count();
-        $genders = collect([
-            'male', 'female',
-        ])->map(function($item) {
-            $count = Resident::where('gender', $item)->canBeDisplayed()->count();
-            return $count;
-        });
+        $totalMails = Surat::all()->count();
+        $inboxCount = Surat::where('jenis', 'masuk')->get()->count();
+        $outboxCount = Surat::where('jenis', 'keluar')->get()->count();
 
-        $malesCount = $genders[0];
-        $femalesCount = $genders[1];
+        $jumlahJiwa = array(
+            array(
+                "label" => "Pria",
+                "value" => 1627
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 1691
+            )
+        );
 
-        $totalMails = Mail::all()->count();
-        $inboxCount = Mail::where('type', 'in')->get()->count();
-        $outboxCount = Mail::where('type', 'out')->get()->count();
+        $jumlahKepalaKeluarga = array(
+            array(
+                "label" => "Pria",
+                "value" => 875
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 208
+            )
+        );
 
-        $povertiesCount = Poverty::all()->count();
+        $jumlahKepemilikanKartuKeluarga = array(
+            array(
+                "label" => "Pria",
+                "value" => 862
+            ),
+            array(
+                "label" => "Wanita",
+                "value" => 188
+            )
+        );
 
-        $birthsCount = Birth::all()->count();
-        $deathsCount = Death::all()->count();
-        $newcomersCount = Newcomer::all()->count();
-        $migrationsCount = LaborMigration::all()->count();
-        $transfersCount = Transfer::all()->count();
-
-        return view('dashboard', compact(
-            'familiesCount',
-            'residentsCount',
-            'malesCount',
-            'femalesCount',
-            'povertiesCount',
+        return view('dashboard', compact(            
             'totalMails',
             'inboxCount',
             'outboxCount',
-            'birthsCount',
-            'deathsCount',
-            'newcomersCount',
-            'migrationsCount',
-            'transfersCount'
+            'jumlahJiwa',
+            'jumlahKepalaKeluarga',
+            'jumlahKepemilikanKartuKeluarga'
         ));
+    }
+
+    public function downloadStatistik(){        
+        $inputFileType  = 'Xlsx';
+        $inputFileName  = "public/statistik/statistik.xlsx";
+        $reader         = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet    = $reader->load($inputFileName);               
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = "STATISTIK_DESA_WANADADI_SEMESTER_1_2019_DOWNLOADED_" . date("d_m_Y_H_i_s");
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
     }
 
     public function login() {

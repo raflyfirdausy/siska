@@ -78,7 +78,7 @@
                     <input type="text" class="form-control" required name="village_name" value="{{ $option->village_name }}">
                   </div>
                 </div>
-                <div class="form-group">
+                {{-- <div class="form-group">
                   <label class="col-md-12 form-label">Logo Desa </label>
                   <div class="col-md-12">
                       <input type="file" class="form-control" name="logo">
@@ -89,7 +89,7 @@
                   <div class="col-md-12">
                     <input type="file" class="form-control" name="background_image">
                   </div>
-                </div>
+                </div> --}}
               </div>
             </div>
           </div>

@@ -66,10 +66,10 @@
               <div class="form-group">
                 <label class="col-md-12 form-label">Nama Dusun </label>
                 <div class="col-md-12">
-                  <input type="text" class="form-control" required name="village_name" value="{{ $option->village_name }}">
+                  <input type="text" disabled class="form-control" required name="village_name" value="{{ $option->village_name }}">
                 </div>
               </div>
-              <div class="form-group">
+              {{-- <div class="form-group">
                 <label class="col-md-12 form-label">Logo Desa </label>
                 <div class="col-md-12">
                   @if ($option->logo)
@@ -88,7 +88,7 @@
                   <small>Belum terdapat gambar latar belakang</small>
                   @endif
                 </div>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>

@@ -34,6 +34,7 @@ Route::middleware(['auth', 'access:pengguna'])->group(function () {
     Route::post('/pengguna/tambah', 'User\UserController@store');
     Route::get('/pengguna/{id}/ubah', 'User\UserController@edit');
     Route::post('/pengguna/{id}/ubah', 'User\UserController@update');
+    Route::post('/pengguna/{id}/hapus', 'User\UserController@destroy');
     
     Route::get('/role', 'User\RoleController@index');
     Route::get('/role/tambah', 'User\RoleController@create');

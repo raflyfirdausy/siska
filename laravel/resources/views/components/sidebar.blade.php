@@ -144,7 +144,7 @@
 
             @if (Auth::user()->canAccess('pengguna'))
 
-            {{-- <li>
+            <li>
                 <a href="#"><i class="fa fa-lock"></i><span class="sidebar-text">Akses</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">
                     <li>
@@ -154,7 +154,7 @@
                         <a href="{{ url("role") }}"><span class="sidebar-text">Role</span></a>
                     </li>
                 </ul>
-            </li> --}}
+            </li>
 
             <li>
                 <a href="#"><i class="fa fa-gear"></i><span class="sidebar-text">Pengaturan Umum</span><span class="fa arrow"></span></a>

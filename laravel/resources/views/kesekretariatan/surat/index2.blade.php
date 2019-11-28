@@ -159,10 +159,20 @@
                   <div class="form-group">                   
                     <label class="form-label">Jenis Surat</label>   
                     <select required name="jenis_surat" id="jenis_surat" class="form-control" title="Pilih Jenis Surat">                  
-                      <option></option>                                          
-                      @foreach($jenis as $j)
-                        <option value="{{ $j->type }}">{{ ucwords(strtolower($j->type)) }}</option>
-                      @endforeach                    
+                      <option></option>       
+                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN TANAH") }}</option>
+                        <option value="SURAT KETERANGAN USAHA">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
+                        <option value="SURAT KETERANGAN KEMATIAN">{{ ucwords("SURAT KETERANGAN KEMATIAN") }}</option>
+                        <option value="SURAT KETERANGAN DOMISILI LEMBAGA">{{ ucwords("SURAT KETERANGAN DOMISILI LEMBAGA") }}</option>
+                        <option value="SURAT KETERANGAN DOMISILI">{{ ucwords("SURAT KETERANGAN DOMISILI") }}</option>
+                        <option value="SURAT KETERANGAN BEDA IDENTITAS">{{ ucwords("SURAT KETERANGAN BEDA IDENTITAS") }}</option>
+                        <option value="SURAT PENGANTAR KTP">{{ ucwords("SURAT PENGANTAR KTP") }}</option>
+                        <option value="SURAT PENGANTAR SKCK">{{ ucwords("SURAT PENGANTAR SKCK") }}</option>
+                        <option value="SURAT PENGANTAR UMUM">{{ ucwords("SURAT PENGANTAR UMUM") }}</option>
+                        <option value="SURAT KETERANGAN TIDAK MAMPU">{{ ucwords("SURAT KETERANGAN TIDAK MAMPU") }}</option>
+                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
+                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
+                        <option value="SURAT LAINNYA">{{ ucwords("SURAT LAINNYA") }}</option>
                     </select>
                   </div>                  
                 </div>

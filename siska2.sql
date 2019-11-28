@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 01, 2019 at 05:06 AM
+-- Generation Time: Nov 28, 2019 at 01:35 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -927,7 +927,7 @@ CREATE TABLE `mails` (
 INSERT INTO `mails` (`id`, `date`, `number`, `target`, `summary`, `note`, `type`, `recommendation`, `photo`) VALUES
 (3, '2019-12-12', '002/424-swg.5/II/2019', 'Deni Sitriadi', 'Penawaran Website', 'jasa penawaran', 'in', 'kepala_desa', 'uploaded/images/PG0GqqSUCxc0Gng6rLOTe3WODD0UkGUpnnf9AOMg.png'),
 (4, '2019-10-26', 'ABC/123/2019', 'Klahang', 'mbuh apaa', 'hehehe', 'in', 'kepala_desa', 'uploaded/images/OFYsnIU519CfCNaWpb1f8abP7unjU8ozVVfSMpkI.jpeg'),
-(5, '2019-10-26', 'ABC/123/2019', 'Klahang', 'mbuh apaa', 'cobaobo', 'out', 'kepala_desa', 'uploaded/images/aqQoQv4jUCRkXsktb4UUu22QbTJ6P2h4MzC07jm5.png');
+(5, '2019-10-26', 'ABC/123/2019', 'Klahang', 'mbuh apaasss', 'cobaobo', 'out', 'kepala_desa', 'uploaded/images/aqQoQv4jUCRkXsktb4UUu22QbTJ6P2h4MzC07jm5.png');
 
 -- --------------------------------------------------------
 
@@ -991,7 +991,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (70, '2019_09_08_144154_create_services_table', 12),
 (71, '2019_09_08_224125_create_options_table', 13),
 (72, '2019_09_08_224222_create_officials_table', 13),
-(73, '2019_09_16_074949_add_year_to_rpjm_table', 14);
+(73, '2019_09_16_074949_add_year_to_rpjm_table', 14),
+(74, '2019_11_17_162745_create_surat_table', 15),
+(75, '2019_11_17_164249_add_type_surat', 16),
+(76, '2019_11_17_164634_add_jenis_surat', 17),
+(77, '2019_11_17_212139_modify_surat', 18),
+(78, '2019_11_17_214733_create_surats_table', 19);
 
 -- --------------------------------------------------------
 
@@ -1127,8 +1132,8 @@ CREATE TABLE `officials` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nip` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `position` enum('kepala_desa','sekretaris_desa','kaur_pemerintahan','kaur_umum','kaur_keuangan','kaur_pembangunan','kaur_keamanan_dan_ketertiban') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `photo` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
+  `position` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1136,10 +1141,13 @@ CREATE TABLE `officials` (
 --
 
 INSERT INTO `officials` (`id`, `name`, `nip`, `position`, `photo`) VALUES
-(3, 'Safki Fajar Fatmawan', '12345678', 'kepala_desa', 'uploaded/images/rgYb0RMf14nqypfNyMjLmOgKYe40jDsx2vhNRLa7.jpeg'),
-(4, 'Deni Sitriadi', '88888888', 'sekretaris_desa', 'uploaded/images/mW0TUshnbSu06YcH4jQ5zjqJUe5VHCPlgOxXnq6s.png'),
-(5, 'Rafli Firdausy Irawan', '123123123', 'kepala_desa', 'uploaded/images/IvuzoNQgxVyXn1gofT9cQz5RvNGOs1DAM2v1sary.jpeg'),
-(6, 'Fariz', '123456789', 'kepala_desa', 'uploaded/images/dzDCavSssPuymsckkkvIdZ4CAMehgJbt3T5qIV22.jpeg');
+(1, 'Teguh Broto H', '123', 'kepala_desa', NULL),
+(2, 'Pratama Yudha S', '2', 'sekretaris_desa', NULL),
+(3, 'Muklisah Sofiyanti', '3', 'kaur_TU_dan_umum', NULL),
+(4, 'Dhyana Ari Puspita', '4', 'kaur_keuangan', NULL),
+(5, 'Akhmad Mualim', '5', 'kaur_perencanaan', NULL),
+(6, 'Medya Esni Octaria K', '6', 'kaur_pemerintahan', NULL),
+(7, 'Agus Dwi Antoro', '7', 'kasi_kesejahteraan', NULL);
 
 -- --------------------------------------------------------
 
@@ -1170,7 +1178,7 @@ CREATE TABLE `options` (
 --
 
 INSERT INTO `options` (`id`, `application_name`, `province`, `district`, `sub_district`, `village`, `village_name`, `office_name`, `office_address`, `postal_code`, `logo`, `background_image`, `phone`, `email`, `description`) VALUES
-(1, 'Sistem Informasi Desa Beji', '33', '33.04', '33.04.19', '33.04.19.2004', 'Beji', 'Balai Desa', 'Jl. Desa Beji RT 03 RW 01', '53459', 'uploaded/images/1q6cdGuLqcc6HZudyjFqh5GRrzWQMBdvPDeD0kgx.jpeg', 'uploaded/images/N4hZduEXcQLtfdNe1OTEYOsZLqECMlorWMDoKct4.jpeg', '082321342123', 'jamaudin@yahoo.com', 'Merdeka OK Siapp');
+(1, 'Sistem Informasi Desa Wanadadi', '33', '33.04', '33.04.10', '33.04.10.2004', 'Wanadadi', 'Balai Desa', 'Jl. KH Ahmad Dahlan No. 25', '53461', 'uploaded/images/1q6cdGuLqcc6HZudyjFqh5GRrzWQMBdvPDeD0kgx.jpeg', 'uploaded/images/N4hZduEXcQLtfdNe1OTEYOsZLqECMlorWMDoKct4.jpeg', '(0286) 3398744', 'desawanadadi@gmail.com', 'Wanadadi Sejahtera');
 
 -- --------------------------------------------------------
 
@@ -1219,7 +1227,8 @@ INSERT INTO `permission_role` (`id`, `permission_id`, `role_id`) VALUES
 (4, 4, 1),
 (5, 5, 1),
 (6, 6, 1),
-(7, 1, 2);
+(7, 1, 2),
+(8, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -1352,6 +1361,37 @@ CREATE TABLE `services` (
   `pin` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_login` datetime NOT NULL,
   `date_created` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `surat`
+--
+
+CREATE TABLE `surat` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `nomer` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal` date NOT NULL,
+  `perihal` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dari` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis` enum('masuk','keluar') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nik` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `surats`
+--
+
+CREATE TABLE `surats` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -92648,7 +92688,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `username`, `password`, `role_id`) VALUES
 (1, 'Admin', 'admin', '$2y$10$OhoI1T1Y799DZjEUW1iQQu3suURIEFPpJakztWbTngjbd4P4t3r3e', 1),
-(3, 'Kependudukan', 'kependudukan', '$2y$10$zAtFkTyXu2.fik5wJ69Xd.VCxMD9nfDqhMkeQUY2UOoeclPxscAV6', 2);
+(4, 'Admin Wanadadi', 'wanadadi', '$2y$10$R0SsSjh377jeJRMDRGq4NeBy0MXZg73Ehi.Ir26SqPpAZ33bw5ob6', 1);
 
 -- --------------------------------------------------------
 
@@ -92884,6 +92924,19 @@ ALTER TABLE `services`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `surat`
+--
+ALTER TABLE `surat`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nomer` (`nomer`);
+
+--
+-- Indexes for table `surats`
+--
+ALTER TABLE `surats`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `transfers`
 --
 ALTER TABLE `transfers`
@@ -93036,7 +93089,7 @@ ALTER TABLE `mails`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `newcomers`
@@ -93054,7 +93107,7 @@ ALTER TABLE `occupations`
 -- AUTO_INCREMENT for table `officials`
 --
 ALTER TABLE `officials`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `options`
@@ -93072,7 +93125,7 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT for table `permission_role`
 --
 ALTER TABLE `permission_role`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `poverties`
@@ -93117,6 +93170,18 @@ ALTER TABLE `services`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `surat`
+--
+ALTER TABLE `surat`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `surats`
+--
+ALTER TABLE `surats`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `transfers`
 --
 ALTER TABLE `transfers`
@@ -93126,7 +93191,7 @@ ALTER TABLE `transfers`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `village_businesses`

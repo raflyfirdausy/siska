@@ -3,7 +3,7 @@
 
 {{-- Judul di tab, selalu tambahin karakter | di akhir --}}
 @section('tab-title')
-Statistik Penduduk |
+Kependudukan |
 @endsection
 
 {{-- Untuk menambahkan custom css file atau meta baru di header --}}

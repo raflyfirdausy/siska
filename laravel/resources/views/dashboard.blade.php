@@ -28,18 +28,18 @@ Dashboard |
               <i class="glyph-icon flaticon-visitors"></i>
             </div>
             <div class="col-xs-9">
-              <small class="stat-title">JUMLAH KEPALA KELUARGA</small>
-              <h1 class="m-0 w-500"><span class="animate-number" data-value="1083" data-animation-duration="1500">0</span></h1>              
+            <small class="stat-title">JUMLAH KEPALA KELUARGA</small>
+              <h1 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahKepalaKeluarga[0]["value"] + $jumlahKepalaKeluarga[1]["value"] }}" data-animation-duration="1500">0</span></h1>              
             </div>
           </div>
           <div class="row">
             <div class="col-xs-6">
               <small class="stat-title">Pria</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="875" data-animation-duration="1500">0</span></h3>            
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahKepalaKeluarga[0]["value"] }}" data-animation-duration="1500">0</span></h3>            
             </div>
             <div class="col-xs-6">
               <small class="stat-title">Wanita</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="208" data-animation-duration="1500">0</span></h3>              
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahKepalaKeluarga[1]["value"] }}" data-animation-duration="1500">0</span></h3>              
             </div>
           </div>
         </div>
@@ -54,17 +54,17 @@ Dashboard |
             </div>
             <div class="col-xs-9">
               <small class="stat-title">JUMLAH PENDUDUK</small>
-              <h1 class="m-0 w-500"><span class="animate-number" data-value="3318" data-animation-duration="1500">0</span></h1>             
+              <h1 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahJiwa[0]["value"] + $jumlahJiwa[1]["value"] }}" data-animation-duration="1500">0</span></h1>             
             </div>
           </div>
           <div class="row">
             <div class="col-xs-6">
               <small class="stat-title">Pria</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="1627" data-animation-duration="1500">0</span></h3>              
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahJiwa[0]["value"]  }}" data-animation-duration="1500">0</span></h3>              
             </div>
             <div class="col-xs-6">
               <small class="stat-title">Wanita</small>
-              <h3 class="m-0 w-500"><span class="animate-number" data-value="1691" data-animation-duration="1500">0</span></h3>              
+              <h3 class="m-0 w-500"><span class="animate-number" data-value="{{ $jumlahJiwa[1]["value"]  }}" data-animation-duration="1500">0</span></h3>              
             </div>
           </div>
         </div>

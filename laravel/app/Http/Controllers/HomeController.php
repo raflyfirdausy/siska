@@ -26,33 +26,34 @@ class HomeController extends Controller
         $jumlahJiwa = array(
             array(
                 "label" => "Pria",
-                "value" => 1627
+                "value" => 1401
             ),
             array(
                 "label" => "Wanita",
-                "value" => 1691
+                "value" => 1304
+
             )
         );
 
         $jumlahKepalaKeluarga = array(
             array(
                 "label" => "Pria",
-                "value" => 875
+                "value" => 790
             ),
             array(
                 "label" => "Wanita",
-                "value" => 208
+                "value" => 101
             )
         );
 
         $jumlahKepemilikanKartuKeluarga = array(
             array(
                 "label" => "Pria",
-                "value" => 862
+                "value" => 781
             ),
             array(
                 "label" => "Wanita",
-                "value" => 188
+                "value" => 65
             )
         );
 
@@ -70,10 +71,16 @@ class HomeController extends Controller
         $inputFileType  = 'Xlsx';
         $inputFileName  = "public/statistik/statistik.xlsx";
         $reader         = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-        $spreadsheet    = $reader->load($inputFileName);               
-
+        $spreadsheet    = $reader->load($inputFileName);      
+        
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->getCell('A1')->setValue("Laporan Data Statistik Kependudukan");
+        $worksheet->getCell('A2')->setValue('Desa ' . ucfirst(strtolower(option()->desa->name)) .
+            ", Kecamatan " . ucfirst(strtolower(option()->kecamatan->name)) . ", Kabupaten " . ucfirst(strtolower(substr(option()->kabupaten->name, 5))));
+        $worksheet->getCell('A3')->setValue("Tahun 2019 Semester 1");
+        
         $writer = new Xlsx($spreadsheet);
-        $filename = "STATISTIK_DESA_WANADADI_SEMESTER_1_2019_DOWNLOADED_" . date("d_m_Y_H_i_s");
+        $filename = "STATISTIK_DESA_". strtoupper(option()->desa->name) ."_SEMESTER_1_2019_DOWNLOADED_" . date("d_m_Y_H_i_s");
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');

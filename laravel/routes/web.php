@@ -35,7 +35,7 @@ Route::middleware(['auth', 'access:pengguna'])->group(function () {
     Route::get('/pengguna/{id}/ubah', 'User\UserController@edit');
     Route::post('/pengguna/{id}/ubah', 'User\UserController@update');
     Route::post('/pengguna/{id}/hapus', 'User\UserController@destroy');
-    
+
     Route::get('/role', 'User\RoleController@index');
     Route::get('/role/tambah', 'User\RoleController@create');
     Route::post('/role/tambah', 'User\RoleController@store');
@@ -77,7 +77,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
 
     Route::get('/penduduk/statistik', 'ModulKependudukanController@statistikKependudukan');
     Route::get('/penduduk/statistik/export', 'ModulKependudukanController@exportStatistikKependudukan');
-    
+
     Route::get('/cek-no-surat', 'ModulKependudukanController@cekNoSurat');
     Route::get('/get-no-surat-terakhir', 'ModulKependudukanController@cekNoSuratTerakhir');
 
@@ -113,7 +113,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/keluarga/{no_kk}/hapus', 'Residency\FamilyController@destroy');
     Route::get('/keluarga/{no_kk}/anggota', 'Residency\FamilyController@getFamilyMembers');
     Route::get('/keluarga/{no_kk}/kepala', 'Residency\FamilyController@getFamily');
-    
+
     Route::get('/penduduk', 'Residency\ResidentController@index');
     Route::get('/penduduk/cetak', 'Residency\ResidentController@print');
     // Route::get('/penduduk/statistik', 'Residency\ResidentController@statistics');
@@ -154,7 +154,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::get('/pendatang/{id}/ubah', 'Residency\NewcomerController@edit');
     Route::post('/pendatang/{id}/ubah', 'Residency\NewcomerController@update');
     Route::post('/pendatang/{id}/hapus', 'Residency\NewcomerController@destroy');
-    
+
     Route::get('/kepindahan', 'Residency\TransferController@index');
     Route::get('/kepindahan/tambah', 'Residency\TransferController@create');
     Route::post('/kepindahan/tambah', 'Residency\TransferController@store');
@@ -163,7 +163,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/kepindahan/{id}/ubah', 'Residency\TransferController@update');
     Route::get('/kepindahan/export', 'Residency\TransferController@export');
     Route::get('/kepindahan/cetak', 'Residency\TransferController@print');
-    
+
     Route::get('/migrasi', 'Residency\LaborMigrationController@index');
     Route::get('/migrasi/tambah', 'Residency\LaborMigrationController@create');
     Route::post('/migrasi/tambah', 'Residency\LaborMigrationController@store');
@@ -197,7 +197,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/kemiskinan/{id}/hapus', 'Residency\PovertyController@destroy');
     Route::get('/kemiskinan/export', 'Residency\PovertyController@export');
     Route::get('/kemiskinan/cetak', 'Residency\PovertyController@print');
-    
+
     Route::get('/audit-kemiskinan', 'Residency\PovertyAuditController@index');
     Route::get('/audit-kemiskinan/tambah', 'Residency\PovertyAuditController@create');
     Route::get('/audit-kemiskinan/cetak', 'Residency\PovertyAuditController@print');
@@ -222,7 +222,7 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/jenis-bantuan/{id}/hapus', 'Residency\BeneficiaryTypeController@destroy');
 });
 
-Route::middleware(['auth', 'access:surat'])->group(function() {
+Route::middleware(['auth', 'access:surat'])->group(function () {
     // Route::get('/surat-masuk', 'Secretariat\InboxController@index');
     Route::get('/surat-masuk/tambah', 'Secretariat\InboxController@create');
     Route::post('/surat-masuk/tambah', 'Secretariat\InboxController@store');
@@ -239,18 +239,18 @@ Route::middleware(['auth', 'access:surat'])->group(function() {
 
     Route::get('/laporan-masuk', 'Secretariat\CommentController@index');
     Route::get('/laporan-masuk/{id}/ubah', 'Secretariat\CommentController@update');
-    
+
     Route::get('/getUsers', 'Secretariat\CommentController@getUsers');
 
     Route::post('/updateUser', 'Secretariat\CommentController@updateUser');
-    
+
     Route::get('/pendaftaran', 'Secretariat\ServiceController@index');
     Route::get('/pendaftaran/{id}/hapus', 'Secretariat\ServiceController@destroy');
     Route::post('/pendaftaran/tambah', 'Secretariat\ServiceController@store');
     Route::get('/contoh', 'Secretariat\ServiceController@contoh');
 });
 
-Route::middleware(['auth', 'access:pertanahan'])->group(function() {
+Route::middleware(['auth', 'access:pertanahan'])->group(function () {
     Route::get('/blok-tanah', 'Estate\LandBlockController@index');
     Route::get('/blok-tanah/tambah', 'Estate\LandBlockController@create');
     Route::get('/blok-tanah/cetak', 'Estate\LandBlockController@print');
@@ -280,7 +280,7 @@ Route::middleware(['auth', 'access:pertanahan'])->group(function() {
     Route::post('/kelas-tanah/{id}/hapus', 'Estate\LandClassController@destroy');
 });
 
-Route::middleware(['auth', 'access:keuangan'])->group(function() {
+Route::middleware(['auth', 'access:keuangan'])->group(function () {
     Route::get('/rpjm', 'Finance\RPJMController@index');
     Route::get('/rpjm/{title}/info', 'Finance\RPJMController@getRpjm');
     Route::get('/rpjm/tambah', 'Finance\RPJMController@create');
@@ -317,7 +317,7 @@ Route::middleware(['auth', 'access:keuangan'])->group(function() {
     Route::post('/usaha-desa/{id}/ubah', 'Finance\VillageBusinessController@update');
     Route::post('/usaha-desa/{id}/hapus', 'Finance\VillageBusinessController@destroy');
     Route::get('/usaha-desa/{name}/info', 'Finance\VillageBusinessController@getBusiness');
-    
+
     Route::get('/sumber-anggaran', 'Finance\BudgetSourceController@index');
     Route::get('/sumber-anggaran/tambah', 'Finance\BudgetSourceController@create');
     Route::post('/sumber-anggaran/tambah', 'Finance\BudgetSourceController@store');

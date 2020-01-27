@@ -26,11 +26,11 @@ class HomeController extends Controller
         $jumlahJiwa = array(
             array(
                 "label" => "Pria",
-                "value" => 1401
+                "value" => 1255
             ),
             array(
                 "label" => "Wanita",
-                "value" => 1304
+                "value" => 1268
 
             )
         );
@@ -38,22 +38,22 @@ class HomeController extends Controller
         $jumlahKepalaKeluarga = array(
             array(
                 "label" => "Pria",
-                "value" => 790
+                "value" => 696
             ),
             array(
                 "label" => "Wanita",
-                "value" => 101
+                "value" => 136
             )
         );
 
         $jumlahKepemilikanKartuKeluarga = array(
             array(
                 "label" => "Pria",
-                "value" => 781
+                "value" => 691
             ),
             array(
                 "label" => "Wanita",
-                "value" => 65
+                "value" => 119
             )
         );
 

@@ -57,10 +57,13 @@ class ModulKependudukanController extends Controller
     public function getLink($nik)
     {
         //WANADADI
-        // $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
+        $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
 
         //BEJI
-        $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/beji_pandanarum/carinik?USER_ID=ARIFIN&PASSWORD=19beji&NIK=$nik";
+        // $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/beji_pandanarum/carinik?USER_ID=ARIFIN&PASSWORD=19beji&NIK=$nik";
+
+        //TAPEN
+        // $link   = "http://durenmas.banjarnegarakab.go.id:8081/ws_server/get_json/10_tapen/carinik?USER_ID=WEGIGPUJADI&PASSWORD=10_wegigpujadi_2002&NIK=$nik";        
 
         // $link   = "http://103.110.4.34:8081/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";
         // $link   = "https://durenmas.banjarnegarakab.go.id/ws_server/get_json/10_wanadadi/carinik?USER_ID=PRATAMAYUDHASANTOSA&PASSWORD=10_wanadadi&NIK=$nik";

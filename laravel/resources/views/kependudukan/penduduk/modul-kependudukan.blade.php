@@ -26,18 +26,18 @@ Modul Penduduk |
                 <div class="row">
                     <form method="GET" action="{{ url()->current() }}" class="form-horizontal">
                         <!-- @csrf -->
-                        <div class="col-md-6" style="padding-left: 0;">
+                        <div class="col-md-12" style="padding-left: 0;">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="addon"><i class="fa fa-search"></i></span>
                                     <input name="nik" type="text" class="form-control" placeholder="Cari ..." aria-describedby="addon">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="input-group">
                                     <button type="submit" class="btn btn-primary">Cari</button>
                                 </div>
-                            </div>
+                            </div>                            
                         </div>
                     </form>
                 </div>

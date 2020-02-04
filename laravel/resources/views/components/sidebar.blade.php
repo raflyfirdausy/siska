@@ -80,6 +80,30 @@
                 </ul>
             </li>
 
+            <li>
+                <a href="#"><i class="fa fa-inbox"></i><span class="sidebar-text">Dokumen Desa</span><span class="fa arrow"></span></a>
+                <ul class="submenu collapse">
+                    <li>
+                        <a href="{{ url("surat-keputusan-kades") }}"><span class="sidebar-text">Surat Keputusan Kades</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url("surat-keputusan-bpd") }}"><span class="sidebar-text">Surat Keputusan BPD</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url("perdes") }}"><span class="sidebar-text">Peraturan Desa</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url("perkades") }}"><span class="sidebar-text">Peraturan Kepala Desa</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url("pengundangan-perdes") }}"><span class="sidebar-text">Pengundangan Perdes</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url("pengundangan-perkades") }}"><span class="sidebar-text">Pengundangan Perkades</span></a>
+                    </li>
+                </ul>
+            </li>
+
             {{-- <li>
                 <a href="#"><i class="fa fa-inbox"></i><span class="sidebar-text">Pelayanan Masyarakat</span><span class="fa arrow"></span></a>
                 <ul class="submenu collapse">

@@ -95,6 +95,42 @@ Route::middleware(['auth', 'access:kependudukan'])->group(function () {
     Route::post('/edit-surat-masuk', 'SuratController@editSuratMasuk');
     Route::post('/hapus-surat-masuk', 'SuratController@hapusSuratMasuk');
     Route::get('/download-surat-masuk', 'SuratController@downloadSuratMasuk');
+
+    Route::get('/surat-keputusan-kades', 'Secretariat\DokumenController@getSkKades');
+    Route::post('/tambah-surat-keputusan-kades', 'Secretariat\DokumenController@addSkKades');
+    Route::post('/edit-surat-keputusan-kades', 'Secretariat\DokumenController@editSkKades');
+    Route::post('/hapus-surat-keputusan-kades', 'Secretariat\DokumenController@hapusSkKades');
+    Route::get('/download-surat-keputusan-kades', 'Secretariat\DokumenController@downloadSkKades');
+
+    Route::get('/surat-keputusan-bpd', 'Secretariat\DokumenController@getSkBpd');
+    Route::post('/tambah-surat-keputusan-bpd', 'Secretariat\DokumenController@addSkBpd');
+    Route::post('/edit-surat-keputusan-bpd', 'Secretariat\DokumenController@editSkBpd');
+    Route::post('/hapus-surat-keputusan-bpd', 'Secretariat\DokumenController@hapusSkBpd');
+    Route::get('/download-surat-keputusan-bpd', 'Secretariat\DokumenController@downloadSkBpd');
+
+    Route::get('/perdes', 'Secretariat\DokumenController@getPerdes');
+    Route::post('/tambah-perdes', 'Secretariat\DokumenController@addPerdes');
+    Route::post('/edit-perdes', 'Secretariat\DokumenController@editPerdes');
+    Route::post('/hapus-perdes', 'Secretariat\DokumenController@hapusPerdes');
+    Route::get('/download-perdes', 'Secretariat\DokumenController@downloadPerdes');
+
+    Route::get('/perkades', 'Secretariat\DokumenController@getPerkades');
+    Route::post('/tambah-perkades', 'Secretariat\DokumenController@addPerkades');
+    Route::post('/edit-perkades', 'Secretariat\DokumenController@editPerkades');
+    Route::post('/hapus-perkades', 'Secretariat\DokumenController@hapusPerkades');
+    Route::get('/download-perkades', 'Secretariat\DokumenController@downloadPerkades');
+
+    Route::get('/pengundangan-perdes', 'Secretariat\DokumenController@getPengundanganPerdes');
+    Route::post('/tambah-pengundangan-perdes', 'Secretariat\DokumenController@addPengundanganPerdes');
+    Route::post('/edit-pengundangan-perdes', 'Secretariat\DokumenController@editPengundanganPerdes');
+    Route::post('/hapus-pengundangan-perdes', 'Secretariat\DokumenController@hapusPengundanganPerdes');
+    Route::get('/download-pengundangan-perdes', 'Secretariat\DokumenController@downloadPengundanganPerdes');
+
+    Route::get('/pengundangan-perkades', 'Secretariat\DokumenController@getPengundanganPerkades');
+    Route::post('/tambah-pengundangan-perkades', 'Secretariat\DokumenController@addPengundanganPerkades');
+    Route::post('/edit-pengundangan-perkades', 'Secretariat\DokumenController@editPengundanganPerkades');
+    Route::post('/hapus-pengundangan-perkades', 'Secretariat\DokumenController@hapusPengundanganPerkades');
+    Route::get('/download-pengundangan-perkades', 'Secretariat\DokumenController@downloadPengundanganPerkades');
     //END=================================================================
 
 

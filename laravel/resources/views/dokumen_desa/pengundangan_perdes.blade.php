@@ -3,7 +3,7 @@
 
 {{-- Judul di tab, selalu tambahin karakter | di akhir --}}
 @section('tab-title')
-    Surat {{ ucfirst($type) }} |
+    Pengundangan Peraturan Desa |
 @endsection
 
 {{-- Untuk menambahkan custom css file atau meta baru di header --}}
@@ -13,7 +13,7 @@
 
 {{-- Judul halaman --}}
 @section('page-title')
-    <strong>Daftar</strong> Surat {{ ucwords($type) }}
+    <strong>Daftar</strong> Pengundangan Peraturan Desa
 @endsection
 
 {{-- Isi dari halaman, konten utama dari suatu halaman --}}
@@ -28,26 +28,33 @@
               <div class="col-md-4" style="padding-right:0; padding-left: 5dp;">
                 <div class="input-group">
                   <span class="input-group-addon" id="addon"><i class="fa fa-search"></i></span>
-                  <input name="q" type="text" class="form-control" placeholder="Cari ..." aria-describedby="addon">
+                  <input name="q" type="text" value="{{ $ket['q'] }}" class="form-control" placeholder="Cari ..." aria-describedby="addon">
                 </div>
-              </div>                            
-              @if ($type == "keluar")
+              </div>                                          
               <div class="col-md-4" style="padding-right:0;">
-                <select name="jenis" class="form-control" title="Pilih Jenis Surat">
-                    <option></option>                    
-                    <option value="semua">Semua</option>
-                    @foreach($jenis as $j)
-                      <option value="{{ $j->type }}">{{ ucwords(strtolower($j->type)) }}</option>
-                    @endforeach
+                <select name="bulan" class="form-control" title="Bulan">
+                    <option value=""></option>
+                    <option value="semua">Semua</option>                    
+                    <option value="01">Januari</option>                    
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="08">Juli</option>
+                    <option value="09">Agustus</option>
+                    <option value="10">September</option>
+                    <option value="11">Oktober</option>
+                    <option value="12">Novemebr</option>
+
                 </select>
-              </div>
-              @endif
+              </div>              
               <div class="col-md-3" style="padding-right:0;">
                 <select name="tahun" class="form-control" title="Tahun">
                     <option></option>
                     <option value="semua">Semua</option>
                     @foreach($tahun as $t)
-                    <option value="{{ $t->tahun }}">{{ $t->tahun }}</option>
+                        <option value="{{ $t->tahun }}" >{{ $t->tahun }}</option>
                     @endforeach
                 </select>
               </div>
@@ -61,44 +68,34 @@
           <div class="col-md-5">
             <div class="pull-right">
               <button id="btnAddSuratKeluar" class="btn btn-success show-button" data-toggle="modal" data-target="#modal-tambah-edit"><i class="fa fa-plus"></i> Tambah</button>              
-              <a href="{{ url("/download-surat-$type?") }}q={{$ket['q']}}&jenis={{$ket['jenis']}}&tahun={{$ket['tahun']}}" class="btn btn-danger"><i class="fa fa-download"></i> Export</a>                   
+              <a href="{{ url("/download-pengundangan-perdes?") }}q={{$ket['q']}}&bulan={{$ket['bulan']}}&tahun={{$ket['tahun']}}" class="btn btn-danger"><i class="fa fa-download"></i> Export</a>                   
             </div>
           </div>
         </div>
-        <table id="posts-table" class="table table-tools table-striped">
+        <table width="100%" style="overflow:hidden" id="posts-table" class="table table-tools table-striped">
           <thead>
               <tr>
                   <th>No</th>                                    
-                  <th>Nomor Surat </th>
-                  @if ($type == "masuk")
-                    <th>Pengirim</th>
-                  @endif                  
-                  <th>Perihal</th>
-                  <th>Tanggal Surat</th>
-                  <th>{{ $type == "keluar" ? "Di Buat" : "Di Terima" }}</th>
-                  <th colspan="2" class="text-center">Aksi</th>
+                  <th>No & Tgl Perdes</th>                         
+                  <th>Tentang</th>
+                  <th>Uraian Singkat</th>  
+                  <th>No & Tgl Pengundangan</th>                  
+                  <th>Keterangan</th>
+                  <th class="text-center">Aksi</th>
               </tr>
           </thead>
           <tbody>
-            @foreach ($surat as $s)
+            @foreach ($sk as $s)
             <tr>
-              <td>{{ $loop->iteration + ($surat->currentPage() * $surat->perPage()) - $surat->perPage() }}</td>          
-              <td>{{ $s->nomer }}</td>  
-              @if ($type == "masuk")
-                <td>{{ $s->dari }}</td>
-              @endif                         
-              <td>{{ $s->perihal }}</td>
-              <td>{{ $s->tanggal}}</td>
-              <td>{{ $s->created_at }}</td>              
-              {{-- <td>
-                <button class="btn btn-info show-button" data-toggle="modal" data-target="#modal-show" data-mail='@json($s)'>Lihat</button>
-              </td> --}}
+              <td>{{ $loop->iteration + ($sk->currentPage() * $sk->perPage()) - $sk->perPage() }}</td>                        
+              <td>{{ $s->no_perdes }}<br>{{ $s->tgl_perdes }}</td>              
+              <td>{{ $s->tentang }}</td>
+              <td>{{ $s->uraian }}</td>    
+              <td>{{ $s->no_pengundangan }}<br>{{ $s->tgl_pengundangan }}</td>                                      
+              <td>{{ $s->keterangan }}</td>
               <td>
-                  <button class="btn btn-warning show-button editData" data-toggle="modal" data-target="#modal-tambah-edit" data-surat='@json($s)'>Ubah</button>
-                  {{-- <a href="{{ url("surat-{$type}/{$s->id}/ubah") }}" class="btn btn-warning" style="margin-bottom:0px;">Ubah</a> --}}
-              </td>
-              <td>
-                <button type="button" class="btn btn-danger hapusData" data-id="{{ $s->id }}" data-toggle="modal" data-target="#modal-confirm">Hapus</button>
+                  <button class="btn btn-warning show-button editData col-xs-12" data-toggle="modal" data-target="#modal-tambah-edit" data-surat='@json($s)'>Ubah</button>                  
+                  <button type="button" class="btn btn-danger hapusData col-xs-12" data-id="{{ $s->id }}" data-toggle="modal" data-target="#modal-confirm">Hapus</button>
               </td>
             </tr>
             @endforeach
@@ -106,7 +103,7 @@
         </table>
       </div>
       <div class="pull-right">
-        {{ $surat->appends($_GET)->links() }}
+        {{ $sk->appends($_GET)->links() }}
       </div>
     </div>
   </div>
@@ -120,72 +117,66 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalTambahEdit">Tambah Manual Surat {{ ucfirst($type) }}</h4>
+        <h4 class="modal-title" id="modalTambahEdit">Tambah / Edit Agenda Pengundangan Peraturan Desa</h4>
       </div>
       <form id="form_tambah_edit" enctype="multipart/form-data" role="form" method="POST">
         @csrf
         <div class="modal-body">
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="form-group">
-                    <label class="form-label">No Surat</label>
-                    <input required type="text" id="no_surat" name="no_surat" class="form-control">
+                    <label class="form-label">Nomor Perdes</label>
+                    <input required type="text" id="no_perdes" name="no_perdes" class="form-control">
                     <small id="NomerWarning" style="color:red;"></small>     
-                    <input type="hidden" name="id_surat" id="id_surat">                
+                    <input type="hidden" name="id_sk" id="id_sk">                
                 </div>
               </div>
-            </div>
-            @if ($type == "masuk")
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                      <label class="form-label">Pengirim</label>
-                      <input required type="text" id="pengirim" name="pengirim" class="form-control">                                  
-                  </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Tanggal Perdes</label>
+                    <input required type="date" id="tgl_perdes" name="tgl_perdes" class="form-control">                             
                 </div>
               </div>
-            @endif            
+            </div>   
             <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-                      <label class="form-label">Tanggal Surat</label>
-                      <input required type="date" id="tanggal_surat" name="tanggal_surat" class="form-control">  
+                    <label class="form-label">Tentang</label>
+                    <input required type="text" id="tentang" name="tentang" class="form-control">                    
                   </div>
               </div>            
             </div>
-            @if ($type == "keluar")
-              <div class="row">
-                <div class="col-md-12">                  
-                  <div class="form-group">                   
-                    <label class="form-label">Jenis Surat</label>   
-                    <select required name="jenis_surat" id="jenis_surat" class="form-control" title="Pilih Jenis Surat">                  
-                      <option></option>       
-                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN TANAH") }}</option>
-                        <option value="SURAT KETERANGAN USAHA">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
-                        <option value="SURAT KETERANGAN KEMATIAN">{{ ucwords("SURAT KETERANGAN KEMATIAN") }}</option>
-                        <option value="SURAT KETERANGAN DOMISILI LEMBAGA">{{ ucwords("SURAT KETERANGAN DOMISILI LEMBAGA") }}</option>
-                        <option value="SURAT KETERANGAN DOMISILI">{{ ucwords("SURAT KETERANGAN DOMISILI") }}</option>
-                        <option value="SURAT KETERANGAN BEDA IDENTITAS">{{ ucwords("SURAT KETERANGAN BEDA IDENTITAS") }}</option>
-                        <option value="SURAT PENGANTAR KTP">{{ ucwords("SURAT PENGANTAR KTP") }}</option>
-                        <option value="SURAT PENGANTAR SKCK">{{ ucwords("SURAT PENGANTAR SKCK") }}</option>
-                        <option value="SURAT PENGANTAR UMUM">{{ ucwords("SURAT PENGANTAR UMUM") }}</option>
-                        <option value="SURAT KETERANGAN TIDAK MAMPU">{{ ucwords("SURAT KETERANGAN TIDAK MAMPU") }}</option>
-                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
-                        <option value="SURAT KETERANGAN TANAH">{{ ucwords("SURAT KETERANGAN USAHA") }}</option>
-                        <option value="SURAT LAINNYA">{{ ucwords("SURAT LAINNYA") }}</option>
-                    </select>
-                  </div>                  
-                </div>
-              </div>
-            @endif            
             <div class="row">
               <div class="col-md-12">
                   <div class="form-group">
-                      <label class="form-label">Perihal</label>
-                      <textarea name="perihal" id="perihal" rows="2" class="form-control"></textarea>                      
+                    <label class="form-label">Uraian Singkat</label>
+                    <input required type="text" id="uraian" name="uraian" class="form-control">                    
                   </div>
+              </div>            
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Nomor Pengundangan</label>
+                    <input required type="text" id="no_pengundangan" name="no_pengundangan" class="form-control">                                    
+                </div>
               </div>
-            </div>        
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Tanggal Pengundangan</label>
+                    <input required type="date" id="tgl_pengundangan" name="tgl_pengundangan" class="form-control">                             
+                </div>
+              </div>
+            </div>                              
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-label">Keterangan</label>
+                    <input required type="text" id="keterangan" name="keterangan" class="form-control">                    
+                  </div>
+              </div>            
+            </div>
+                                
           </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
@@ -204,7 +195,7 @@
           <h4 class="modal-title" id="myModalLabel">Perhatian</h4>
         </div>
         <div class="modal-body">
-          Apakah Anda yakin akan menghapus surat {{ $type }} ini?
+          Apakah Anda yakin akan menghapus item ini?
         </div>
         <div class="modal-footer">
           <form action="#" method="POST" id="form-delete">
@@ -221,29 +212,29 @@
 
     $("#btnAddSuratKeluar").click(function(){
       $('form').trigger("reset");
-      $("#no_surat").attr("onkeyup", "cekKodeSurat(this);");
-      $("#NomerWarning").text("");
-      $("#form_tambah_edit").attr("action", '{{ URL::to("/tambah-surat-$type") }}');
+    //   $("#no_surat").attr("onkeyup", "cekKodeSurat(this);");
+    //   $("#NomerWarning").text("");
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/tambah-pengundangan-perdes") }}'); 
     });
 
     $('.editData').on('click', function() {
-      $("#form_tambah_edit").attr("action", '{{ URL::to("/edit-surat-$type") }}');
+      $("#form_tambah_edit").attr("action", '{{ URL::to("/edit-pengundangan-perdes") }}');
       $("#NomerWarning").text("");
-
       let surat = $(this).data('surat');          
-      $("#id_surat").attr("value", surat.id);
-      $("#no_surat").attr("onkeyup", "cekKodeSurat(this, '" + surat.nomer + "');");
-      $('#no_surat').val(surat.nomer);
-      $('#tanggal_surat').val(surat.tanggal);    
-      $('#jenis_surat').val(surat.type);      
-      $('#perihal').val(surat.perihal);      
-      $('#pengirim').val(surat.dari);    
+      $("#id_sk").attr("value", surat.id);      
+      $('#no_perdes').val(surat.no_perdes);
+      $('#tgl_perdes').val(surat.tgl_perdes);
+      $('#tentang').val(surat.tentang);    
+      $('#uraian').val(surat.uraian);        
+      $('#no_pengundangan').val(surat.no_pengundangan);
+      $('#tgl_pengundangan').val(surat.tgl_pengundangan);        
+      $('#keterangan').val(surat.keterangan);  
     });    
 
     $('.hapusData').on('click', function() {
       var id = $(this).data('id');      
       $("#hapus_id").attr("value", id);
-      $('#form-delete').attr('action', '{{ URL::to("/hapus-surat-$type") }}');
+      $('#form-delete').attr('action', '{{ URL::to("/hapus-pengundangan-perdes") }}');
     });    
 
     function cekKodeSurat(input, nomerSurat = null){         
@@ -295,8 +286,7 @@
 
     $('#delete-confirm').on('click', function() {
       $('#modal-confirm').modal('hide');
-    });
-
+    });      
     
   </script>
 @endsection
